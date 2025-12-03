@@ -513,8 +513,7 @@ function closeInfoModal() {
   document.getElementById("infoModal")?.classList.add("hidden");
 }
 
-function toggleStepsView() {
-  stepsCollapsed = !stepsCollapsed;
+function updateStepVisibility(scrollTarget) {
   const step1 = document.getElementById("step1");
   const step2 = document.getElementById("step2");
   const step3 = document.getElementById("step3");
@@ -524,13 +523,26 @@ function toggleStepsView() {
     if (el) el.classList.toggle("hidden-step", stepsCollapsed);
   });
   if (step4) step4.classList.toggle("hidden-step", !stepsCollapsed);
-  const btn = document.getElementById("toggleStepsBtn");
-  if (btn) btn.textContent = stepsCollapsed ? "이전" : "다음";
-  if (stepsCollapsed) {
-    document.getElementById("step3")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  } else {
-    document.getElementById("step1")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const prevBtn = document.getElementById("prevStepsBtn");
+  if (prevBtn) {
+    prevBtn.classList.toggle("hidden-step", !stepsCollapsed);
+    prevBtn.style.display = stepsCollapsed ? "" : "none";
   }
+
+  if (scrollTarget) {
+    scrollTarget.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+function goToNextStep() {
+  stepsCollapsed = true;
+  const target = document.getElementById("step4") || document.getElementById("step3");
+  updateStepVisibility(target);
+}
+
+function goToPrevStep() {
+  stepsCollapsed = false;
+  updateStepVisibility(document.getElementById("step1"));
 }
 
 function renderTable() {
@@ -837,11 +849,12 @@ function init() {
   updateModalCardPreviews();
   updateSelectedMaterialLabel();
   updateSelectedAddonsDisplay();
+  updateStepVisibility();
 
   $("#closeInfoModal")?.addEventListener("click", closeInfoModal);
   $("#infoModalBackdrop")?.addEventListener("click", closeInfoModal);
-  $("#toggleStepsBtn")?.addEventListener("click", toggleStepsView);
-  $("#toggleStepsBtn")?.addEventListener("click", toggleStepsView);
+  $("#nextStepsBtn")?.addEventListener("click", goToNextStep);
+  $("#prevStepsBtn")?.addEventListener("click", goToPrevStep);
 
   $("#widthInput").addEventListener("input", validateSizeFields);
   $("#lengthInput").addEventListener("input", validateSizeFields);

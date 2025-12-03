@@ -537,6 +537,8 @@ th, td {
 }
 
 .modal-content {
+  display: flex;
+  flex-direction: column;
   position: relative;
   max-width: 720px;
   margin: 60px auto;
@@ -545,7 +547,7 @@ th, td {
   padding: 20px;
   box-shadow: 0 12px 30px rgba(0,0,0,0.2);
   max-height: 80vh;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .modal-header {
@@ -576,10 +578,24 @@ th, td {
   justify-content: flex-end;
 }
 
+.modal-body {
+  flex: 1;
+  overflow: auto;
+  scrollbar-width: none; /* Firefox */
+}
+
+.modal-body::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
 .info-message {
   font-size: 14px;
   color: #333;
   line-height: 1.5;
+}
+
+.modal-content::-webkit-scrollbar {
+  display: none; /* Chrome/Safari: hide scrollbar */
 }
 
 .material-card:hover {

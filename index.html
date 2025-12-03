@@ -120,7 +120,8 @@
         </div>
 
         <div class="nav-actions">
-          <button type="button" class="next-page-btn" id="toggleStepsBtn">다음</button>
+          <button type="button" class="prev-page-btn hidden-step" id="prevStepsBtn">이전</button>
+          <button type="button" class="next-page-btn" id="nextStepsBtn">다음</button>
         </div>
       </aside>
     </div>
@@ -132,8 +133,10 @@
       <div class="modal-header">
         <h3>목재 선택</h3>
       </div>
-      <div id="materialTabs" class="material-tabs"></div>
-      <div id="materialCards" class="material-grid"></div>
+      <div class="modal-body">
+        <div id="materialTabs" class="material-tabs"></div>
+        <div id="materialCards" class="material-grid"></div>
+      </div>
       <div class="modal-footer">
         <button type="button" id="closeMaterialModal" class="modal-close">닫기</button>
       </div>
