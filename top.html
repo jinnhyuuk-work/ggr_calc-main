@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>상판 견적 계산기</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header class="page-header">
+      <div class="title-block">
+        <h1 class="title-main">상판 견적 계산기</h1>
+        <p class="title-sub">Countertop Estimate</p>
+      </div>
+      <div class="header-divider"></div>
+    </header>
+
+    <div class="main-grid">
+      <div class="steps-main">
+        <section class="step-card">
+          <h2>상판 타입을 선택해주세요.</h2>
+          <div class="material-picker">
+            <button type="button" id="openTopTypeModal">상판 타입 선택하기</button>
+          </div>
+          <div id="selectedTopTypeCard" class="selected-toptype-card">
+            <div class="placeholder">선택된 상판 타입 없음</div>
+          </div>
+        </section>
+
+        <section class="step-card">
+          <h2>사이즈를 입력해주세요.</h2>
+          <div class="form-row">
+            <label>주방 형태</label>
+            <div class="field-col">
+              <select id="kitchenShape">
+                <option value="">타입을 선택해주세요</option>
+                <option value="i">I자</option>
+                <option value="l">ㄱ자</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <label>폭 (mm)</label>
+            <div class="field-col">
+              <input type="number" id="topWidth" placeholder="예: 650" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label>길이 (mm)</label>
+            <div class="field-col">
+              <input type="number" id="topLength" placeholder="예: 2400" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label>두께 (mm)</label>
+            <div class="field-col">
+              <input type="number" id="topThickness" placeholder="예: 30" />
+            </div>
+          </div>
+        </section>
+
+        <section class="step-card">
+          <h2>옵션을 선택해주세요.</h2>
+          <div class="material-grid service-grid" id="topOptionCards"></div>
+        </section>
+
+        <section class="step-card action-card">
+          <div id="topEstimateText" class="item-price-display">금액: 0원</div>
+          <button id="calcTopBtn">상판 담기</button>
+        </section>
+      </div>
+
+      <aside class="step-card summary-card">
+        <h2>주문하실 견적서를 확인해주세요.</h2>
+        <div class="summary">
+          <p>상판 타입: <span id="summaryType">-</span></p>
+          <p>사이즈: <span id="summarySize">-</span></p>
+          <p>옵션: <span id="summaryOptions">-</span></p>
+          <p>
+            총 결제금액: <span id="summaryTotal">0</span> 원<br />
+            <span class="summary-subtext">(상판 + 옵션 + 추가 가공 포함)</span>
+          </p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div id="topTypeModal" class="modal hidden">
+    <div class="modal-backdrop" id="topTypeModalBackdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>상판 타입 선택</h3>
+      </div>
+      <div class="modal-body">
+        <div id="topTypeCards" class="material-grid service-grid"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="closeTopTypeModal" class="modal-close">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="top.js"></script>
+</body>
+</html>

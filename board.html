@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>가구랑 견적 계산기</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header class="page-header">
+      <div class="title-block">
+        <h1 class="title-main">가구랑 견적 계산기</h1>
+        <p class="title-sub">GGR Estimate</p>
+      </div>
+      <div class="header-divider"></div>
+    </header>
+
+    <div class="main-grid">
+      <div class="steps-main">
+        <!-- STEP 01: 목재 선택 -->
+        <!-- STEP 01: 목재 선택 -->
+        <section id="step1" class="step-card">
+          <h2>구매하실 목재의 종류를 선택해주세요.</h2>
+          <div class="material-picker">
+            <button type="button" id="openMaterialModal">목재 선택하기</button>
+          </div>
+          <div id="selectedMaterialCard" class="selected-material-card">
+            <div class="placeholder">선택된 목재 없음</div>
+          </div>
+        </section>
+
+        <!-- STEP 02: 사이즈 입력 -->
+        <section id="step2" class="step-card">
+          <h2>선택하신 목재의 사이즈를 입력해주세요.</h2>
+
+          <div class="form-row">
+            <label>두께 (mm)</label>
+            <div class="field-col">
+              <select id="thicknessSelect">
+                <option value="">목재를 선택해주세요</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>폭 (mm)</label>
+            <div class="field-col">
+              <input type="number" id="widthInput" placeholder="폭 100~800mm" />
+              <div class="error-msg" id="widthError"></div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>길이 (mm)</label>
+            <div class="field-col">
+              <input type="number" id="lengthInput" placeholder="길이 200~2400mm" />
+              <div class="error-msg" id="lengthError"></div>
+            </div>
+          </div>
+
+          <div class="preview-box" id="previewBox">
+            <div class="preview-text" id="previewText">목재와 사이즈를 선택하면 미리보기가 표시됩니다.</div>
+            <div class="preview-frame">
+              <div class="preview-color" id="previewColor"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 03: 가공 서비스 선택 -->
+        <section id="step3" class="step-card">
+          <h2>가공 서비스를 선택해주세요.</h2>
+          <div id="serviceCards" class="material-grid service-grid"></div>
+        </section>
+
+        <section class="step-card action-card">
+          <div id="itemPriceDisplay">금액: 0원</div>
+          <button id="addItemBtn">목재담기</button>
+        </section>
+
+        <section id="step4" class="step-card addons-card hidden-step">
+          <h2>추가 부자재 주문</h2>
+          <p class="addons-desc">
+            목재 주문을 완료하셨다면 추가 부자재(피스, 경첩, 손잡이 등) 주문도 이어서 진행해보세요.
+          </p>
+          <div class="addon-picker">
+            <button type="button" id="openAddonModal">부자재 선택하기</button>
+          </div>
+          <div class="addon-picker">
+            <div id="selectedAddonCard" class="selected-material-card addon-card-display">
+              <div class="placeholder">선택된 부자재 없음</div>
+            </div>
+          </div>
+          <div class="addons-actions">
+            <button type="button" class="secondary-btn" id="addAddonBtn">부자재 담기</button>
+          </div>
+        </section>
+
+        <section id="step5" class="step-card hidden-step">
+          <h2>고객 정보를 입력해주세요.</h2>
+          <div class="form-row">
+            <label for="customerName">이름</label>
+            <div class="field-col">
+              <input type="text" id="customerName" placeholder="홍길동" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="customerPhone">연락처</label>
+            <div class="field-col">
+              <input type="tel" id="customerPhone" placeholder="010-1234-5678" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="customerEmail">이메일</label>
+            <div class="field-col">
+              <input type="email" id="customerEmail" placeholder="you@example.com" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="customerMemo">요청사항</label>
+            <div class="field-col">
+              <textarea id="customerMemo" rows="3" placeholder="배송 시 요청사항 등을 입력해주세요."></textarea>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div id="orderComplete" class="order-complete hidden-step">
+        <p class="complete-message">주문 전송이 완료되었습니다.</p>
+        <div id="orderCompleteDetails" class="complete-details"></div>
+        <button type="button" class="next-page-btn" id="resetFlowBtn">처음으로 돌아가기</button>
+      </div>
+
+      <!-- FINAL: 견적 리스트 & 총액 (우측 고정) -->
+      <aside id="stepFinal" class="step-card summary-card">
+        <h2>주문하실 견적서를 확인해주세요.</h2>
+
+        <table id="estimateTable">
+          <thead>
+            <tr>
+              <th>제품명</th>
+              <th>수량</th>
+              <th>금액</th>
+              <th>삭제</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+
+        <div id="estimateEmpty" class="empty-banner">추가된 항목이 없습니다.</div>
+
+        <div class="summary">
+          <p>예상무게: <span id="totalWeight">0</span> kg</p>
+          <p>예상 포장비: <span id="packingCost">0</span> 원</p>
+          <p>목재 금액 합계: <span id="materialsTotal">0</span> 원</p>
+          <p>총 결제금액: <span id="grandTotal">0</span> 원<br /><span class="summary-subtext">(목재 + 부자재 + 포장 + 배송 + VAT)</span></p>
+          <p>네이버 결제 수량: <span id="naverUnits">0</span> 개</p>
+        </div>
+
+        <div class="nav-actions">
+          <button type="button" class="prev-page-btn hidden-step" id="prevStepsBtn">이전</button>
+          <button type="button" class="next-page-btn" id="nextStepsBtn">다음</button>
+          <button type="button" class="send-btn hidden-step" id="sendQuoteBtn">주문 전송</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div id="materialModal" class="modal hidden">
+    <div class="modal-backdrop" id="materialModalBackdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>목재 선택</h3>
+      </div>
+      <div class="modal-body">
+        <div id="materialTabs" class="material-tabs"></div>
+        <div class="material-category-header">
+          <div id="materialCategoryName" class="material-category-title"></div>
+          <p id="materialCategoryDesc" class="material-category-desc"></p>
+        </div>
+        <div id="materialCards" class="material-grid"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="closeMaterialModal" class="modal-close">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="addonModal" class="modal hidden">
+    <div class="modal-backdrop" id="addonModalBackdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>부자재 선택</h3>
+      </div>
+      <div class="modal-body">
+        <div id="addonCards" class="material-grid addon-grid"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="closeAddonModal" class="modal-close">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="infoModal" class="modal hidden">
+    <div class="modal-backdrop" id="infoModalBackdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>안내</h3>
+      </div>
+      <div id="infoMessage" class="info-message">안내 메시지</div>
+      <div class="modal-footer">
+        <button type="button" id="closeInfoModal" class="modal-close">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

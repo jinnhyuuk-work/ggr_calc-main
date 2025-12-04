@@ -1,18 +1,10 @@
 import {
   MATERIALS,
   PROCESSING_SERVICES,
-  PACKING_SETTINGS,
   ADDON_ITEMS,
   MATERIAL_CATEGORIES_DESC,
 } from "./data.js";
-
-const VAT_RATE = 0.1; // 10% 부가세 (원하는 비율로 수정 가능)
-const ORDER_EMAIL = "info@ggr.kr"; // 사내 주문 수신 메일 주소 (필요시 수정)
-const EMAILJS_CONFIG = {
-  serviceId: "service_8iw3ovj",
-  templateId: "template_iaid1xl",
-  publicKey: "dUvt2iF9ciN8bvf6r",
-}; // EmailJS 설정
+import { VAT_RATE, calcPackingCost, calcShippingCost, initEmailJS, EMAILJS_CONFIG } from "./shared.js";
 
 function getPricePerM2(material, thickness) {
   if (material.pricePerM2ByThickness) {
@@ -74,25 +66,6 @@ function calcWeightKg({ materialId, width, length, thickness, quantity }) {
   const volumeM3 = areaM2 * thicknessM * quantity;
   const weightKg = volumeM3 * material.density;
   return { weightKg };
-}
-
-// 4) 포장비 계산
-function calcPackingCost(totalWeightKg) {
-  if (totalWeightKg === 0) return 0; // 아이템이 없으면 포장비 없음
-  const { packingPricePerKg, basePackingPrice } = PACKING_SETTINGS;
-  const raw = totalWeightKg * packingPricePerKg;
-  return Math.max(Math.round(raw), basePackingPrice);
-}
-
-// 5) 배송비 계산 (예시: 무게 기준 구간제)
-function calcShippingCost(totalWeightKg) {
-  if (totalWeightKg === 0) return 0;
-
-  if (totalWeightKg <= 10) return 4000;
-  if (totalWeightKg <= 20) return 6000;
-  if (totalWeightKg <= 30) return 8000;
-  // 30kg 넘어가면 기본 + kg당 추가
-  return 8000 + Math.ceil((totalWeightKg - 30) / 10) * 3000;
 }
 
 // 6) 한 아이템 전체 계산 (목재비 + 가공비 + 무게 + VAT 전까지)
@@ -388,6 +361,14 @@ function updateSelectedAddonsDisplay() {
   target.innerHTML = chips;
 }
 
+function updateAddItemState() {
+  const btn = $("#addItemBtn");
+  if (!btn) return;
+  const input = readCurrentInputs();
+  const err = validateInputs(input);
+  btn.disabled = Boolean(err);
+}
+
 function readCurrentInputs() {
   const selected = document.querySelector('input[name="material"]:checked');
   const materialId = selected ? selected.value : "";
@@ -430,27 +411,31 @@ function validateInputs(input) {
 }
 
 // 버튼: 목재담기
-$("#addItemBtn").addEventListener("click", () => {
-  const input = readCurrentInputs();
-  const err = validateInputs(input);
-  if (err) {
-    showInfoModal(err);
-    return;
-  }
+const addItemBtn = $("#addItemBtn");
+if (addItemBtn) {
+  addItemBtn.addEventListener("click", () => {
+    const input = readCurrentInputs();
+    const err = validateInputs(input);
+    if (err) {
+      $("#itemPriceDisplay").textContent = err;
+      updateAddItemState();
+      return;
+    }
 
-  const detail = calcItemDetail(input);
+    const detail = calcItemDetail(input);
 
-  state.items.push({
-    id: crypto.randomUUID(),
-    ...input,
-    ...detail,
+    state.items.push({
+      id: crypto.randomUUID(),
+      ...input,
+      ...detail,
+    });
+
+    renderTable();
+    renderSummary();
+    $("#itemPriceDisplay").textContent = "금액: 0원";
+    resetStepsAfterAdd();
   });
-
-  renderTable();
-  renderSummary();
-  $("#itemPriceDisplay").textContent = "금액: 0원";
-  resetStepsAfterAdd();
-});
+}
 
 const addAddonBtn = document.getElementById("addAddonBtn");
 if (addAddonBtn) {
@@ -540,6 +525,7 @@ function resetStepsAfterAdd() {
   validateSizeFields();
   updatePreview();
   updateModalCardPreviews();
+  updateAddItemState();
 }
 
 function showInfoModal(message) {
@@ -1057,7 +1043,7 @@ function validateSizeFields() {
 
   const disable = !widthValid || !lengthValid;
   if (calcBtn) calcBtn.disabled = disable;
-  addBtn.disabled = disable;
+  updateAddItemState();
 }
 
 function autoCalculatePrice() {
@@ -1065,12 +1051,14 @@ function autoCalculatePrice() {
   const err = validateInputs(input);
   if (err) {
     $("#itemPriceDisplay").textContent = err;
+    updateAddItemState();
     return;
   }
   const detail = calcItemDetail(input);
   $("#itemPriceDisplay").textContent =
     `금액(부가세 포함): ${detail.total.toLocaleString()}원 ` +
     `(목재비 ${detail.materialCost.toLocaleString()} + 가공비 ${detail.processingCost.toLocaleString()})`;
+  updateAddItemState();
 }
 
 function updatePreview() {
@@ -1182,11 +1170,7 @@ function init() {
 
   resetOrderCompleteUI();
 
-  if (window.emailjs && EMAILJS_CONFIG.publicKey) {
-    window.emailjs.init({
-      publicKey: EMAILJS_CONFIG.publicKey,
-    });
-  }
+  initEmailJS();
 
   renderMaterialTabs();
   renderMaterialCards();
@@ -1201,6 +1185,7 @@ function init() {
   updateSelectedMaterialLabel();
   updateSizePlaceholders(MATERIALS[selectedMaterialId]);
   updateSelectedAddonsDisplay();
+  updateAddItemState();
   updateStepVisibility();
 
   $("#closeInfoModal")?.addEventListener("click", closeInfoModal);
@@ -1252,6 +1237,7 @@ function init() {
     if (e.target.name === "material" || e.target.name === "service") {
       autoCalculatePrice();
       updatePreview();
+      updateAddItemState();
     }
   });
 }
