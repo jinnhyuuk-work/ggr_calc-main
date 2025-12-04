@@ -255,19 +255,19 @@ export const MATERIALS = {
 };
 
 export const PROCESSING_SERVICES = {
-  edge_sanding: {
-    id: "edge_sanding",
-    label: "엣지 사포 마감",
-    pricePerMeter: 500,
-    swatch: "linear-gradient(135deg, #f6f6f6 0%, #d6d6d6 100%)",
-    description: "외곽 사포 마감 (m당)",
+  hinge_hole: {
+    id: "hinge_hole",
+    label: "경첩 홀 가공",
+    pricePerHole: 1500,
+    swatch: "linear-gradient(135deg, #f0f7ff 0%, #c1dbff 100%)",
+    description: "경첩 홀 1개당",
   },
-  round_corner: {
-    id: "round_corner",
-    label: "모서리 라운드",
-    pricePerCorner: 800,
-    swatch: "linear-gradient(135deg, #e8f0ff 0%, #b0c7ff 100%)",
-    description: "모서리 라운드 처리 (각당)",
+  handle_hole: {
+    id: "handle_hole",
+    label: "손잡이 홀 가공",
+    pricePerHole: 1200,
+    swatch: "linear-gradient(135deg, #fef4e6 0%, #ffd9a8 100%)",
+    description: "손잡이 홀 1개당",
   },
 };
 
