@@ -19,6 +19,15 @@ const state = { items: [] };
 let sendingEmail = false;
 let orderCompleted = false;
 
+function getPreviewDimensions(width, length, maxPx = 160, minPx = 40) {
+  if (!width || !length) return { w: 120, h: 120 };
+  const scale = Math.min(maxPx / Math.max(width, length), 1);
+  return {
+    w: Math.max(minPx, width * scale),
+    h: Math.max(minPx, length * scale),
+  };
+}
+
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
@@ -297,6 +306,7 @@ function refreshTopEstimate() {
   if (detail.error) {
     priceEl.textContent = detail.error;
     updateAddButtonState();
+    updateTopPreview(input, null);
     return;
   }
   const baseCost = Math.max(0, detail.materialCost - detail.processingCost);
@@ -304,6 +314,7 @@ function refreshTopEstimate() {
     baseCost
   )} + 가공비 ${formatPrice(detail.processingCost)})`;
   updateAddButtonState();
+  updateTopPreview(input, detail);
 }
 
 function addTopItem() {
@@ -352,6 +363,7 @@ function resetSelections() {
   });
   updateSelectedTopTypeCard();
   refreshTopEstimate();
+  updateTopPreview(readTopInputs(), null);
 }
 
 function updateLength2Visibility() {
@@ -362,6 +374,40 @@ function updateLength2Visibility() {
   row.classList.toggle("hidden-step", !needsSecond);
 }
 
+function updateTopPreview(input, detail) {
+  const colorEl = $("#topPreviewColor");
+  const textEl = $("#topPreviewText");
+  if (!colorEl || !textEl) return;
+
+  const type = TOP_TYPES.find((t) => t.id === input.typeId);
+  const needsSecond = input.shape === "l" || input.shape === "rl";
+  const hasSize =
+    input.width && input.length && input.thickness && (!needsSecond || input.length2);
+
+  if (!type || !hasSize || !detail) {
+    colorEl.style.background = "#ddd";
+    colorEl.style.width = "120px";
+    colorEl.style.height = "120px";
+    textEl.textContent = "상판과 사이즈를 선택하면 미리보기가 표시됩니다.";
+    return;
+  }
+
+  const swatchMap = {
+    solid: "linear-gradient(135deg, #f5f5f5 0%, #d9d9d9 100%)",
+    engineered: "linear-gradient(135deg, #f2f7ff 0%, #d6e4ff 100%)",
+    stainless: "linear-gradient(135deg, #f0f0f0 0%, #c7c7c7 100%)",
+  };
+  colorEl.style.background = swatchMap[type.id] || "#ddd";
+
+  const dominantLength = needsSecond ? Math.max(input.length || 0, input.length2 || 0) : input.length;
+  const { w, h } = getPreviewDimensions(input.width, dominantLength, 180, 40);
+  colorEl.style.width = `${w}px`;
+  colorEl.style.height = `${h}px`;
+
+  textEl.textContent = needsSecond
+    ? `${type.name} / ${input.width}×${input.length} & ${input.width}×${input.length2}×${input.thickness}mm`
+    : `${type.name} / ${input.width}×${input.length}×${input.thickness}mm`;
+}
 function updateItemQuantity(id, quantity) {
   const idx = state.items.findIndex((it) => it.id === id);
   if (idx === -1) return;
@@ -645,6 +691,7 @@ function initTop() {
   updateAddButtonState();
   updateStepVisibility();
   updateSendButtonEnabled();
+  updateTopPreview(readTopInputs(), null);
 }
 
 function openTopTypeModal() {
