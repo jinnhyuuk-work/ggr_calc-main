@@ -7,7 +7,7 @@ const arrayToMap = (list) =>
 const LX_SMR_PET_ITEMS = [
   {
     id: "lx_smr_pet_01",
-    name: "LX SMR PET 1",
+    name: "SMR 화이트",
     category: "LX SMR PET",
     availableThickness: [18],
     pricePerM2: 52000,
@@ -20,7 +20,7 @@ const LX_SMR_PET_ITEMS = [
   },
   {
     id: "lx_smr_pet_02",
-    name: "LX SMR PET 2",
+    name: "SMR 마시멜로",
     category: "LX SMR PET",
     availableThickness: [18],
     pricePerM2: 52000,
@@ -33,7 +33,7 @@ const LX_SMR_PET_ITEMS = [
   },
   {
     id: "lx_smr_pet_03",
-    name: "LX SMR PET 3",
+    name: "SMR 포그 그레이",
     category: "LX SMR PET",
     availableThickness: [18],
     pricePerM2: 52000,
@@ -46,7 +46,7 @@ const LX_SMR_PET_ITEMS = [
   },
   {
     id: "lx_smr_pet_04",
-    name: "LX SMR PET 4",
+    name: "SMR 그레이",
     category: "LX SMR PET",
     availableThickness: [18],
     pricePerM2: 52000,
@@ -59,7 +59,7 @@ const LX_SMR_PET_ITEMS = [
   },
   {
     id: "lx_smr_pet_05",
-    name: "LX SMR PET 5",
+    name: "SMR 머쉬룸",
     category: "LX SMR PET",
     availableThickness: [18],
     pricePerM2: 52000,
@@ -72,7 +72,7 @@ const LX_SMR_PET_ITEMS = [
   },
   {
     id: "lx_smr_pet_06",
-    name: "LX SMR PET 6",
+    name: "SMR 베이지",
     category: "LX SMR PET",
     availableThickness: [18],
     pricePerM2: 52000,
@@ -85,7 +85,7 @@ const LX_SMR_PET_ITEMS = [
   },
   {
     id: "lx_smr_pet_07",
-    name: "LX SMR PET 7",
+    name: "SMR 바닐라",
     category: "LX SMR PET",
     availableThickness: [18],
     pricePerM2: 52000,
@@ -98,7 +98,7 @@ const LX_SMR_PET_ITEMS = [
   },
   {
     id: "lx_smr_pet_08",
-    name: "LX SMR PET 8",
+    name: "SMR 피치 휩",
     category: "LX SMR PET",
     availableThickness: [18],
     pricePerM2: 52000,
@@ -111,7 +111,7 @@ const LX_SMR_PET_ITEMS = [
   },
   {
     id: "lx_smr_pet_09",
-    name: "LX SMR PET 9",
+    name: "SMR 카본 그레이",
     category: "LX SMR PET",
     availableThickness: [18],
     pricePerM2: 52000,
@@ -124,7 +124,7 @@ const LX_SMR_PET_ITEMS = [
   },
   {
     id: "lx_smr_pet_10",
-    name: "LX SMR PET 10",
+    name: "SMR 틸그린",
     category: "LX SMR PET",
     availableThickness: [18],
     pricePerM2: 52000,
@@ -137,7 +137,7 @@ const LX_SMR_PET_ITEMS = [
   },
   {
     id: "lx_smr_pet_11",
-    name: "LX SMR PET 11",
+    name: "SMR 테라그린",
     category: "LX SMR PET",
     availableThickness: [18],
     pricePerM2: 52000,
@@ -150,7 +150,7 @@ const LX_SMR_PET_ITEMS = [
   },
   {
     id: "lx_smr_pet_12",
-    name: "LX SMR PET 12",
+    name: "SMR 나이트 블루",
     category: "LX SMR PET",
     availableThickness: [18],
     pricePerM2: 52000,
@@ -166,7 +166,7 @@ const LX_SMR_PET_ITEMS = [
 const LX_TEXTURE_PET_ITEMS = [
   {
     id: "lx_texture_pet_01",
-    name: "LX Texture PET 1",
+    name: "슬레이트 그레이",
     category: "LX Texture PET",
     availableThickness: [18],
     pricePerM2: 54000,
@@ -179,7 +179,7 @@ const LX_TEXTURE_PET_ITEMS = [
   },
   {
     id: "lx_texture_pet_02",
-    name: "LX Texture PET 2",
+    name: "슬레이트 베이지",
     category: "LX Texture PET",
     availableThickness: [18],
     pricePerM2: 54000,
@@ -195,7 +195,7 @@ const LX_TEXTURE_PET_ITEMS = [
 const LX_PET_ITEMS = [
   {
     id: "lx_pet_01",
-    name: "LX PET 1",
+    name: "화이트(무광)",
     category: "LX PET",
     availableThickness: [18],
     pricePerM2: 50000,
@@ -208,7 +208,7 @@ const LX_PET_ITEMS = [
   },
   {
     id: "lx_pet_02",
-    name: "LX PET 2",
+    name: "화이트(유광)",
     category: "LX PET",
     availableThickness: [18],
     pricePerM2: 50000,
@@ -221,7 +221,7 @@ const LX_PET_ITEMS = [
   },
   {
     id: "lx_pet_03",
-    name: "LX PET 3",
+    name: "아이보리(무광)",
     category: "LX PET",
     availableThickness: [18],
     pricePerM2: 50000,
@@ -234,7 +234,7 @@ const LX_PET_ITEMS = [
   },
   {
     id: "lx_pet_04",
-    name: "LX PET 4",
+    name: "아이보리(유광)",
     category: "LX PET",
     availableThickness: [18],
     pricePerM2: 50000,
@@ -247,7 +247,7 @@ const LX_PET_ITEMS = [
   },
   {
     id: "lx_pet_05",
-    name: "LX PET 5",
+    name: "그레이(무광)",
     category: "LX PET",
     availableThickness: [18],
     pricePerM2: 50000,
@@ -260,7 +260,7 @@ const LX_PET_ITEMS = [
   },
   {
     id: "lx_pet_06",
-    name: "LX PET 6",
+    name: "그레이(유광)",
     category: "LX PET",
     availableThickness: [18],
     pricePerM2: 50000,
@@ -273,7 +273,7 @@ const LX_PET_ITEMS = [
   },
   {
     id: "lx_pet_07",
-    name: "LX PET 7",
+    name: "연그레이(무광)",
     category: "LX PET",
     availableThickness: [18],
     pricePerM2: 50000,
@@ -286,7 +286,7 @@ const LX_PET_ITEMS = [
   },
   {
     id: "lx_pet_08",
-    name: "LX PET 8",
+    name: "연그레이(유광)",
     category: "LX PET",
     availableThickness: [18],
     pricePerM2: 50000,
@@ -299,7 +299,7 @@ const LX_PET_ITEMS = [
   },
   {
     id: "lx_pet_09",
-    name: "LX PET 9",
+    name: "실키 그레이(무광)",
     category: "LX PET",
     availableThickness: [18],
     pricePerM2: 50000,
@@ -312,7 +312,7 @@ const LX_PET_ITEMS = [
   },
   {
     id: "lx_pet_10",
-    name: "LX PET 10",
+    name: "실키 그레이(유광)",
     category: "LX PET",
     availableThickness: [18],
     pricePerM2: 50000,
@@ -325,7 +325,7 @@ const LX_PET_ITEMS = [
   },
   {
     id: "lx_pet_11",
-    name: "LX PET 11",
+    name: "인디고 블루(무광)",
     category: "LX PET",
     availableThickness: [18],
     pricePerM2: 50000,
@@ -338,7 +338,7 @@ const LX_PET_ITEMS = [
   },
   {
     id: "lx_pet_12",
-    name: "LX PET 12",
+    name: "인디고 블루(유광)",
     category: "LX PET",
     availableThickness: [18],
     pricePerM2: 50000,
@@ -351,7 +351,7 @@ const LX_PET_ITEMS = [
   },
   {
     id: "lx_pet_13",
-    name: "LX PET 13",
+    name: "진그레이(무광)",
     category: "LX PET",
     availableThickness: [18],
     pricePerM2: 50000,
@@ -364,7 +364,7 @@ const LX_PET_ITEMS = [
   },
   {
     id: "lx_pet_14",
-    name: "LX PET 14",
+    name: "진그레이(유광)",
     category: "LX PET",
     availableThickness: [18],
     pricePerM2: 50000,
@@ -377,7 +377,7 @@ const LX_PET_ITEMS = [
   },
   {
     id: "lx_pet_15",
-    name: "LX PET 15",
+    name: "백색 펄(무광)",
     category: "LX PET",
     availableThickness: [18],
     pricePerM2: 50000,
@@ -390,7 +390,7 @@ const LX_PET_ITEMS = [
   },
   {
     id: "lx_pet_16",
-    name: "LX PET 16",
+    name: "블루 펄(유광)",
     category: "LX PET",
     availableThickness: [18],
     pricePerM2: 50000,
@@ -406,7 +406,7 @@ const LX_PET_ITEMS = [
 const HANSOL_PET_ITEMS = [
   {
     id: "hansol_pet_01",
-    name: "Hansol PET 1",
+    name: "퍼펙트 화이트",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -419,7 +419,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_02",
-    name: "Hansol PET 2",
+    name: "퍼펙트 화이트(유광)",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -432,7 +432,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_03",
-    name: "Hansol PET 3",
+    name: "포그 그레이",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -445,7 +445,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_04",
-    name: "Hansol PET 4",
+    name: "라이트 그레이",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -458,7 +458,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_05",
-    name: "Hansol PET 5",
+    name: "도브 화이트",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -471,7 +471,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_06",
-    name: "Hansol PET 6",
+    name: "트루 펄 화이트",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -484,7 +484,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_07",
-    name: "Hansol PET 7",
+    name: "샌드 그레이",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -497,7 +497,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_08",
-    name: "Hansol PET 8",
+    name: "샌드 그레이(유광)",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -510,7 +510,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_09",
-    name: "Hansol PET 9",
+    name: "크림 화이트",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -523,7 +523,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_10",
-    name: "Hansol PET 10",
+    name: "크림 화이트(유광)",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -536,7 +536,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_11",
-    name: "Hansol PET 11",
+    name: "새틴 베이지",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -549,7 +549,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_12",
-    name: "Hansol PET 12",
+    name: "애쉬 베이지",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -562,7 +562,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_13",
-    name: "Hansol PET 13",
+    name: "로지 핑크",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -575,7 +575,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_14",
-    name: "Hansol PET 14",
+    name: "로투스 핑크",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -588,7 +588,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_15",
-    name: "Hansol PET 15",
+    name: "모노 그레이",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -601,7 +601,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_16",
-    name: "Hansol PET 16",
+    name: "모노 그레이(유광)",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -614,7 +614,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_17",
-    name: "Hansol PET 17",
+    name: "미스트 그린",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -627,7 +627,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_18",
-    name: "Hansol PET 18",
+    name: "재스퍼 그린",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -640,7 +640,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_19",
-    name: "Hansol PET 19",
+    name: "다크 그레이",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -653,7 +653,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_20",
-    name: "Hansol PET 20",
+    name: "다크 그레이(유광)",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -666,7 +666,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_21",
-    name: "Hansol PET 21",
+    name: "코튼 블루",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -679,7 +679,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_22",
-    name: "Hansol PET 22",
+    name: "스모키 올리브",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -692,7 +692,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_23",
-    name: "Hansol PET 23",
+    name: "인디고 블루",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -705,7 +705,7 @@ const HANSOL_PET_ITEMS = [
   },
   {
     id: "hansol_pet_24",
-    name: "Hansol PET 24",
+    name: "럭스 블랙",
     category: "Hansol PET",
     availableThickness: [18],
     pricePerM2: 51000,
@@ -721,7 +721,7 @@ const HANSOL_PET_ITEMS = [
 const ORIGINAL_PET_ITEMS = [
   {
     id: "original_pet_01",
-    name: "Original PET 1",
+    name: "새틴 옐로우(무광)",
     category: "Original PET",
     availableThickness: [18],
     pricePerM2: 49000,
@@ -734,7 +734,7 @@ const ORIGINAL_PET_ITEMS = [
   },
   {
     id: "original_pet_02",
-    name: "Original PET 2",
+    name: "새틴 옐로우(유광)",
     category: "Original PET",
     availableThickness: [18],
     pricePerM2: 49000,
@@ -747,7 +747,7 @@ const ORIGINAL_PET_ITEMS = [
   },
   {
     id: "original_pet_03",
-    name: "Original PET 3",
+    name: "새틴 코럴(무광)",
     category: "Original PET",
     availableThickness: [18],
     pricePerM2: 49000,
@@ -760,7 +760,7 @@ const ORIGINAL_PET_ITEMS = [
   },
   {
     id: "original_pet_04",
-    name: "Original PET 4",
+    name: "새틴 코럴(유광)",
     category: "Original PET",
     availableThickness: [18],
     pricePerM2: 49000,
@@ -773,7 +773,7 @@ const ORIGINAL_PET_ITEMS = [
   },
   {
     id: "original_pet_05",
-    name: "Original PET 5",
+    name: "코타 민트(무광)",
     category: "Original PET",
     availableThickness: [18],
     pricePerM2: 49000,
@@ -786,7 +786,7 @@ const ORIGINAL_PET_ITEMS = [
   },
   {
     id: "original_pet_06",
-    name: "Original PET 6",
+    name: "코타 민트(무광)",
     category: "Original PET",
     availableThickness: [18],
     pricePerM2: 49000,
@@ -799,7 +799,7 @@ const ORIGINAL_PET_ITEMS = [
   },
   {
     id: "original_pet_07",
-    name: "Original PET 7",
+    name: "글램 핑크(무광)",
     category: "Original PET",
     availableThickness: [18],
     pricePerM2: 49000,
@@ -812,7 +812,7 @@ const ORIGINAL_PET_ITEMS = [
   },
   {
     id: "original_pet_08",
-    name: "Original PET 8",
+    name: "글램 핑크(유광)",
     category: "Original PET",
     availableThickness: [18],
     pricePerM2: 49000,
@@ -825,7 +825,7 @@ const ORIGINAL_PET_ITEMS = [
   },
   {
     id: "original_pet_09",
-    name: "Original PET 9",
+    name: "새틴 스카이블루(무광)",
     category: "Original PET",
     availableThickness: [18],
     pricePerM2: 49000,
@@ -838,7 +838,7 @@ const ORIGINAL_PET_ITEMS = [
   },
   {
     id: "original_pet_10",
-    name: "Original PET 10",
+    name: "새틴 스카이블루(유광)",
     category: "Original PET",
     availableThickness: [18],
     pricePerM2: 49000,
@@ -851,7 +851,7 @@ const ORIGINAL_PET_ITEMS = [
   },
   {
     id: "original_pet_11",
-    name: "Original PET 11",
+    name: "글램 라벤더(무광)",
     category: "Original PET",
     availableThickness: [18],
     pricePerM2: 49000,
@@ -864,7 +864,7 @@ const ORIGINAL_PET_ITEMS = [
   },
   {
     id: "original_pet_12",
-    name: "Original PET 12",
+    name: "글램 라벤더(유광)",
     category: "Original PET",
     availableThickness: [18],
     pricePerM2: 49000,
@@ -877,7 +877,7 @@ const ORIGINAL_PET_ITEMS = [
   },
   {
     id: "original_pet_13",
-    name: "Original PET 13",
+    name: "민트(무광)",
     category: "Original PET",
     availableThickness: [18],
     pricePerM2: 49000,
@@ -890,7 +890,7 @@ const ORIGINAL_PET_ITEMS = [
   },
   {
     id: "original_pet_14",
-    name: "Original PET 14",
+    name: "민트(유광)",
     category: "Original PET",
     availableThickness: [18],
     pricePerM2: 49000,
@@ -903,7 +903,7 @@ const ORIGINAL_PET_ITEMS = [
   },
   {
     id: "original_pet_15",
-    name: "Original PET 15",
+    name: "블랙(무광)",
     category: "Original PET",
     availableThickness: [18],
     pricePerM2: 49000,
@@ -916,7 +916,7 @@ const ORIGINAL_PET_ITEMS = [
   },
   {
     id: "original_pet_16",
-    name: "Original PET 16",
+    name: "블랙(유광)",
     category: "Original PET",
     availableThickness: [18],
     pricePerM2: 49000,
@@ -932,7 +932,7 @@ const ORIGINAL_PET_ITEMS = [
 const LPM_ITEMS = [
   {
     id: "lpm_01",
-    name: "LPM 1",
+    name: "화이트 워시",
     category: "LPM",
     availableThickness: [18],
     pricePerM2: 47000,
@@ -945,7 +945,7 @@ const LPM_ITEMS = [
   },
   {
     id: "lpm_02",
-    name: "LPM 2",
+    name: "모나코",
     category: "LPM",
     availableThickness: [18],
     pricePerM2: 47000,
@@ -958,7 +958,7 @@ const LPM_ITEMS = [
   },
   {
     id: "lpm_03",
-    name: "LPM 3",
+    name: "DL07",
     category: "LPM",
     availableThickness: [18],
     pricePerM2: 47000,
@@ -971,7 +971,7 @@ const LPM_ITEMS = [
   },
   {
     id: "lpm_04",
-    name: "LPM 4",
+    name: "DL05",
     category: "LPM",
     availableThickness: [18],
     pricePerM2: 47000,
@@ -984,7 +984,7 @@ const LPM_ITEMS = [
   },
   {
     id: "lpm_05",
-    name: "LPM 5",
+    name: "연우드",
     category: "LPM",
     availableThickness: [18],
     pricePerM2: 47000,
@@ -997,7 +997,7 @@ const LPM_ITEMS = [
   },
   {
     id: "lpm_06",
-    name: "LPM 6",
+    name: "진우드",
     category: "LPM",
     availableThickness: [18],
     pricePerM2: 47000,
@@ -1010,7 +1010,7 @@ const LPM_ITEMS = [
   },
   {
     id: "lpm_07",
-    name: "LPM 7",
+    name: "오크 화이트",
     category: "LPM",
     availableThickness: [18],
     pricePerM2: 47000,
@@ -1023,7 +1023,7 @@ const LPM_ITEMS = [
   },
   {
     id: "lpm_08",
-    name: "LPM 8",
+    name: "오크 브라운",
     category: "LPM",
     availableThickness: [18],
     pricePerM2: 47000,
@@ -1036,7 +1036,7 @@ const LPM_ITEMS = [
   },
   {
     id: "lpm_09",
-    name: "LPM 9",
+    name: "터치 화이트",
     category: "LPM",
     availableThickness: [18],
     pricePerM2: 47000,
@@ -1049,7 +1049,7 @@ const LPM_ITEMS = [
   },
   {
     id: "lpm_10",
-    name: "LPM 10",
+    name: "터치 그레이",
     category: "LPM",
     availableThickness: [18],
     pricePerM2: 47000,
@@ -1062,7 +1062,7 @@ const LPM_ITEMS = [
   },
   {
     id: "lpm_11",
-    name: "LPM 11",
+    name: "터치 블랙",
     category: "LPM",
     availableThickness: [18],
     pricePerM2: 47000,
@@ -1075,7 +1075,7 @@ const LPM_ITEMS = [
   },
   {
     id: "lpm_12",
-    name: "LPM 12",
+    name: "세라 화이트",
     category: "LPM",
     availableThickness: [18],
     pricePerM2: 47000,
@@ -1088,7 +1088,7 @@ const LPM_ITEMS = [
   },
   {
     id: "lpm_13",
-    name: "LPM 13",
+    name: "세라 그레이",
     category: "LPM",
     availableThickness: [18],
     pricePerM2: 47000,
@@ -1101,7 +1101,7 @@ const LPM_ITEMS = [
   },
   {
     id: "lpm_14",
-    name: "LPM 14",
+    name: "콘크리트 연그레이",
     category: "LPM",
     availableThickness: [18],
     pricePerM2: 47000,
@@ -1114,7 +1114,7 @@ const LPM_ITEMS = [
   },
   {
     id: "lpm_15",
-    name: "LPM 15",
+    name: "콘크리트 그레이",
     category: "LPM",
     availableThickness: [18],
     pricePerM2: 47000,
@@ -1127,7 +1127,7 @@ const LPM_ITEMS = [
   },
   {
     id: "lpm_16",
-    name: "LPM 16",
+    name: "화이트 엠보",
     category: "LPM",
     availableThickness: [18],
     pricePerM2: 47000,
@@ -1140,7 +1140,7 @@ const LPM_ITEMS = [
   },
   {
     id: "lpm_17",
-    name: "LPM 17",
+    name: "그레이 엠보",
     category: "LPM",
     availableThickness: [18],
     pricePerM2: 47000,

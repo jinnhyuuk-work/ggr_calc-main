@@ -202,7 +202,11 @@ let sendingEmail = false;
 let orderCompleted = false;
 const EXTRA_CATEGORIES = ["LX SMR PET", "LX Texture PET", "LX PET", "Hansol PET", "Original PET", "LPM"];
 const categories = Array.from(
-  new Set([...Object.values(MATERIALS).map((m) => m.category || "기타"), ...EXTRA_CATEGORIES])
+  new Set(
+    [...Object.values(MATERIALS).map((m) => m.category || "기타"), ...EXTRA_CATEGORIES].filter(
+      (cat) => cat !== "집성목" && cat !== "MDF"
+    )
+  )
 );
 let selectedCategory = categories[0];
 let selectedMaterialId = "";
