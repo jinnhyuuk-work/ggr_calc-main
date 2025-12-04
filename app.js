@@ -552,6 +552,7 @@ function updateStepVisibility(scrollTarget) {
   const summaryCard = document.getElementById("stepFinal");
   const sendBtn = document.getElementById("sendQuoteBtn");
   const nextBtn = document.getElementById("nextStepsBtn");
+  const backToCenterBtn = document.getElementById("backToCenterBtn");
   const orderComplete = document.getElementById("orderComplete");
   const navActions = document.querySelector(".nav-actions");
 
@@ -580,6 +581,10 @@ function updateStepVisibility(scrollTarget) {
   if (nextBtn) {
     nextBtn.classList.toggle("hidden-step", showPhase3 || orderCompleted);
     nextBtn.style.display = showPhase3 || orderCompleted ? "none" : "";
+  }
+  if (backToCenterBtn) {
+    backToCenterBtn.classList.toggle("hidden-step", !showPhase1 || orderCompleted);
+    backToCenterBtn.style.display = showPhase1 && !orderCompleted ? "" : "none";
   }
   if (!orderCompleted) {
     if (orderComplete) orderComplete.classList.add("hidden-step");
@@ -745,8 +750,8 @@ function updateItemQuantity(id, quantity) {
 function renderSummary() {
   const summary = calcOrderSummary(state.items);
 
-  $("#materialsTotal").textContent = summary.materialsTotal.toLocaleString();
-  $("#totalWeight").textContent = summary.totalWeight.toFixed(2);
+  const materialsTotalEl = $("#materialsTotal");
+  if (materialsTotalEl) materialsTotalEl.textContent = summary.materialsTotal.toLocaleString();
   $("#packingCost").textContent = summary.packingCost.toLocaleString();
   $("#grandTotal").textContent = summary.grandTotal.toLocaleString();
 
@@ -1227,12 +1232,17 @@ function init() {
   $("#openAddonModal")?.addEventListener("click", openAddonModal);
   $("#closeAddonModal")?.addEventListener("click", closeAddonModal);
   $("#addonModalBackdrop")?.addEventListener("click", closeAddonModal);
+  $("#backToCenterBtn")?.addEventListener("click", () => {
+    window.location.href = "index.html";
+  });
   $("#sendQuoteBtn")?.addEventListener("click", sendQuote);
   ["#customerName", "#customerPhone", "#customerEmail"].forEach((sel) => {
     const el = document.querySelector(sel);
     el?.addEventListener("input", updateSendButtonEnabled);
   });
-  $("#resetFlowBtn")?.addEventListener("click", resetFlow);
+  $("#resetFlowBtn")?.addEventListener("click", () => {
+    window.location.href = "index.html";
+  });
   document.addEventListener("change", (e) => {
     if (e.target.name === "material" || e.target.name === "service") {
       autoCalculatePrice();

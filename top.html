@@ -17,17 +17,17 @@
 
     <div class="main-grid">
       <div class="steps-main">
-        <section class="step-card">
-          <h2>상판 타입을 선택해주세요.</h2>
+        <section id="step1" class="step-card">
+          <h2>상판을 선택해주세요.</h2>
           <div class="material-picker">
-            <button type="button" id="openTopTypeModal">상판 타입 선택하기</button>
+            <button type="button" id="openTopTypeModal">상판 선택하기</button>
           </div>
           <div id="selectedTopTypeCard" class="selected-toptype-card">
             <div class="placeholder">선택된 상판 타입 없음</div>
           </div>
         </section>
 
-        <section class="step-card">
+        <section id="step2" class="step-card">
           <h2>사이즈를 입력해주세요.</h2>
           <div class="form-row">
             <label>주방 형태</label>
@@ -59,7 +59,7 @@
           </div>
         </section>
 
-        <section class="step-card">
+        <section id="step3" class="step-card">
           <h2>옵션을 선택해주세요.</h2>
           <div class="material-grid service-grid" id="topOptionCards"></div>
         </section>
@@ -68,20 +68,72 @@
           <div id="topEstimateText" class="item-price-display">금액: 0원</div>
           <button id="calcTopBtn">상판 담기</button>
         </section>
+
+        <section id="step5" class="step-card hidden-step">
+          <h2>고객 정보를 입력해주세요.</h2>
+          <div class="form-row">
+            <label for="customerName">이름</label>
+            <div class="field-col">
+              <input type="text" id="customerName" placeholder="홍길동" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="customerPhone">연락처</label>
+            <div class="field-col">
+              <input type="tel" id="customerPhone" placeholder="010-1234-5678" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="customerEmail">이메일</label>
+            <div class="field-col">
+              <input type="email" id="customerEmail" placeholder="you@example.com" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="customerMemo">요청사항</label>
+            <div class="field-col">
+              <textarea id="customerMemo" rows="3" placeholder="배송 시 요청사항 등을 입력해주세요."></textarea>
+            </div>
+          </div>
+        </section>
       </div>
 
-      <aside class="step-card summary-card">
+      <aside class="step-card summary-card" id="stepFinal">
         <h2>주문하실 견적서를 확인해주세요.</h2>
+        <div class="table-wrapper">
+          <table id="estimateTable">
+            <thead>
+              <tr>
+                <th>제품명</th>
+                <th>수량</th>
+                <th>금액</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div id="estimateEmpty" class="empty-banner">추가된 항목이 없습니다.</div>
+        </div>
+
         <div class="summary">
-          <p>상판 타입: <span id="summaryType">-</span></p>
-          <p>사이즈: <span id="summarySize">-</span></p>
-          <p>옵션: <span id="summaryOptions">-</span></p>
-          <p>
-            총 결제금액: <span id="summaryTotal">0</span> 원<br />
-            <span class="summary-subtext">(상판 + 옵션 + 추가 가공 포함)</span>
-          </p>
+          <p>예상 포장비: <span id="packingCost">0</span> 원</p>
+          <p>총 결제금액: <span id="grandTotal">0</span> 원<br /><span class="summary-subtext">(상판 + 옵션 + 포장 + VAT)</span></p>
+          <p>네이버 결제 수량: <span id="naverUnits">0</span> 개</p>
+        </div>
+
+        <div class="nav-actions">
+          <button type="button" class="prev-page-btn" id="backToCenterBtn">이전</button>
+          <button type="button" class="prev-page-btn hidden-step" id="prevStepsBtn">이전</button>
+          <button type="button" class="next-page-btn" id="nextStepsBtn">다음</button>
+          <button type="button" class="send-btn hidden-step" id="sendQuoteBtn">주문 전송</button>
         </div>
       </aside>
+    </div>
+
+    <div id="orderComplete" class="order-complete hidden-step">
+      <p class="complete-message">주문 전송이 완료되었습니다.</p>
+      <div id="orderCompleteDetails" class="complete-details"></div>
+      <button type="button" class="next-page-btn" id="resetFlowBtn">처음으로 돌아가기</button>
     </div>
   </main>
 
@@ -100,6 +152,20 @@
     </div>
   </div>
 
+  <div id="infoModal" class="modal hidden">
+    <div class="modal-backdrop" id="infoModalBackdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>안내</h3>
+      </div>
+      <div id="infoMessage" class="info-message">안내 메시지</div>
+      <div class="modal-footer">
+        <button type="button" id="closeInfoModal" class="modal-close">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script type="module" src="top.js"></script>
 </body>
 </html>
