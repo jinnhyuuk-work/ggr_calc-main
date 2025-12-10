@@ -23,7 +23,7 @@ function getPricePerM2(material, thickness) {
   return material.pricePerM2;
 }
 
-// 1) 목재 금액 계산
+// 1) 합판 금액 계산
 function calcMaterialCost({ materialId, width, length, quantity, thickness }) {
   const material = MATERIALS[materialId];
   const areaM2 = (width / 1000) * (length / 1000); // mm → m
@@ -88,7 +88,7 @@ function calcWeightKg({ materialId, width, length, thickness, quantity }) {
   return { weightKg };
 }
 
-// 6) 한 아이템 전체 계산 (목재비 + 가공비 + 무게 + VAT 전까지)
+// 6) 한 아이템 전체 계산 (합판비 + 가공비 + 무게 + VAT 전까지)
 function calcItemDetail(input) {
   const {
     materialId,
@@ -202,7 +202,7 @@ const state = {
   addons: [],
   serviceDetails: {}, // 현재 선택된 가공별 세부 옵션
 };
-let currentPhase = 1; // 1: 목재/가공, 2: 부자재, 3: 고객 정보
+let currentPhase = 1; // 1: 합판/가공, 2: 부자재, 3: 고객 정보
 let sendingEmail = false;
 let orderCompleted = false;
 const EXTRA_CATEGORIES = ["LX SMR PET", "LX Texture PET", "LX PET", "Hansol PET", "Original PET", "LPM"];
@@ -552,7 +552,7 @@ function validateInputs(input) {
   const { materialId, thickness, width, length, quantity } = input;
   const mat = MATERIALS[materialId];
 
-  if (!materialId) return "목재를 선택해주세요.";
+  if (!materialId) return "합판을 선택해주세요.";
   if (!thickness) return "두께를 선택해주세요.";
   if (!width) return "폭을 입력해주세요.";
   const widthMin = mat?.minWidth ?? WIDTH_MIN;
@@ -568,12 +568,12 @@ function validateInputs(input) {
 
   const material = mat;
   if (!material.availableThickness?.includes(thickness)) {
-    return `선택한 목재는 ${material.availableThickness.join(", ")}T만 가능합니다.`;
+    return `선택한 합판은 ${material.availableThickness.join(", ")}T만 가능합니다.`;
   }
   return null;
 }
 
-// 버튼: 목재담기
+// 버튼: 합판담기
 const addItemBtn = $("#addItemBtn");
 if (addItemBtn) {
   addItemBtn.addEventListener("click", () => {
@@ -670,7 +670,7 @@ function resetStepsAfterAdd() {
   // 두께 선택 초기화
   const thicknessSelect = $("#thicknessSelect");
   if (thicknessSelect) {
-    thicknessSelect.innerHTML = `<option value="">목재를 선택해주세요</option>`;
+    thicknessSelect.innerHTML = `<option value="">합판을 선택해주세요</option>`;
   }
 
   // 사이즈 입력 초기화
@@ -783,7 +783,7 @@ function goToNextStep() {
     const hasMaterial = state.items.some((it) => it.type !== "addon");
     const hasAddon = state.items.some((it) => it.type === "addon");
     if (!hasMaterial && !hasAddon) {
-      showInfoModal("목재나 부자재 중 하나 이상 담아주세요.");
+      showInfoModal("합판이나 부자재 중 하나 이상 담아주세요.");
       return;
     }
     currentPhase = 3;
@@ -862,7 +862,7 @@ function renderTable() {
         <td colspan="4">
           <div class="sub-detail">
             <div class="detail-line">주문크기 ${sizeText} · 가공 ${servicesText}</div>
-            <div class="detail-line">목재비 ${item.materialCost.toLocaleString()}원 · 가공비 ${item.processingCost.toLocaleString()}원 · VAT ${item.vat.toLocaleString()}원</div>
+          <div class="detail-line">합판비 ${item.materialCost.toLocaleString()}원 · 가공비 ${item.processingCost.toLocaleString()}원 · VAT ${item.vat.toLocaleString()}원</div>
           </div>
         </td>
       `;
@@ -966,7 +966,7 @@ function buildEmailContent() {
 
   lines.push("");
   lines.push("[합계]");
-  lines.push(`목재비: ${summary.materialsTotal.toLocaleString()}원`);
+  lines.push(`합판비: ${summary.materialsTotal.toLocaleString()}원`);
   lines.push(`포장비: ${summary.packingCost.toLocaleString()}원`);
   lines.push(`총결제금액: ${summary.grandTotal.toLocaleString()}원`);
   lines.push(`예상무게: ${summary.totalWeight.toFixed(2)}kg`);
@@ -1087,7 +1087,7 @@ function renderOrderCompleteDetails() {
     <div class="complete-section">
       <h4>합계</h4>
       <p>총결제금액: ${summary.grandTotal.toLocaleString()}원</p>
-      <p>목재비: ${summary.materialsTotal.toLocaleString()}원</p>
+      <p>합판비: ${summary.materialsTotal.toLocaleString()}원</p>
       <p>포장비: ${summary.packingCost.toLocaleString()}원</p>
       <p>예상무게: ${summary.totalWeight.toFixed(2)}kg</p>
     </div>
@@ -1224,7 +1224,7 @@ function autoCalculatePrice() {
   const detail = calcItemDetail(input);
   $("#itemPriceDisplay").textContent =
     `금액(부가세 포함): ${detail.total.toLocaleString()}원 ` +
-    `(목재비 ${detail.materialCost.toLocaleString()} + 가공비 ${detail.processingCost.toLocaleString()})`;
+    `(합판비 ${detail.materialCost.toLocaleString()} + 가공비 ${detail.processingCost.toLocaleString()})`;
   updateAddItemState();
 }
 
@@ -1239,7 +1239,7 @@ function updatePreview() {
     colorEl.style.background = "#ddd";
     colorEl.style.width = "120px";
     colorEl.style.height = "120px";
-    textEl.textContent = "목재와 사이즈를 선택하면 미리보기가 표시됩니다.";
+    textEl.textContent = "합판과 사이즈를 선택하면 미리보기가 표시됩니다.";
     clearPreviewHoles();
     return;
   }
@@ -1337,8 +1337,8 @@ function updateSelectedMaterialLabel() {
     cardEl.innerHTML = `
       <div class="material-visual placeholder-visual"></div>
       <div class="info">
-        <div class="placeholder">선택된 목재 없음</div>
-        <div class="meta">목재를 선택해주세요.</div>
+        <div class="placeholder">선택된 합판 없음</div>
+        <div class="meta">합판을 선택해주세요.</div>
       </div>
     `;
     return;

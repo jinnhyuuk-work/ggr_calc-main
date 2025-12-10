@@ -2,42 +2,42 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>가구랑 견적 계산기</title>
+  <title>합판 견적 계산기</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <main class="container">
     <header class="page-header">
       <div class="title-block">
-        <h1 class="title-main">가구랑 견적 계산기</h1>
-        <p class="title-sub">GGR Estimate</p>
+        <h1 class="title-main">합판 견적 계산기</h1>
+        <p class="title-sub">Board Estimate</p>
       </div>
       <div class="header-divider"></div>
     </header>
 
     <div class="main-grid">
       <div class="steps-main">
-        <!-- STEP 01: 목재 선택 -->
-        <!-- STEP 01: 목재 선택 -->
+        <!-- STEP 01: 합판 선택 -->
+        <!-- STEP 01: 합판 선택 -->
         <section id="step1" class="step-card">
-          <h2>구매하실 목재의 종류를 선택해주세요.</h2>
+          <h2>구매하실 합판의 종류를 선택해주세요.</h2>
           <div class="material-picker">
-            <button type="button" id="openMaterialModal">목재 선택하기</button>
+            <button type="button" id="openMaterialModal">합판 선택하기</button>
           </div>
           <div id="selectedMaterialCard" class="selected-material-card">
-            <div class="placeholder">선택된 목재 없음</div>
+            <div class="placeholder">선택된 합판 없음</div>
           </div>
         </section>
 
         <!-- STEP 02: 사이즈 입력 -->
         <section id="step2" class="step-card">
-          <h2>선택하신 목재의 사이즈를 입력해주세요.</h2>
+          <h2>선택하신 합판의 사이즈를 입력해주세요.</h2>
 
           <div class="form-row">
             <label>두께 (mm)</label>
             <div class="field-col">
               <select id="thicknessSelect">
-                <option value="">목재를 선택해주세요</option>
+                <option value="">합판을 선택해주세요</option>
               </select>
             </div>
           </div>
@@ -59,7 +59,7 @@
           </div>
 
           <div class="preview-box" id="previewBox">
-            <div class="preview-text" id="previewText">목재와 사이즈를 선택하면 미리보기가 표시됩니다.</div>
+            <div class="preview-text" id="previewText">합판과 사이즈를 선택하면 미리보기가 표시됩니다.</div>
             <div class="preview-frame">
               <div class="preview-color" id="previewColor"></div>
             </div>
@@ -74,13 +74,13 @@
 
         <section class="step-card action-card">
           <div id="itemPriceDisplay">금액: 0원</div>
-          <button id="addItemBtn">목재담기</button>
+          <button id="addItemBtn">합판담기</button>
         </section>
 
         <section id="step4" class="step-card addons-card hidden-step">
           <h2>추가 부자재 주문</h2>
           <p class="addons-desc">
-            목재 주문을 완료하셨다면 추가 부자재(피스, 경첩, 손잡이 등) 주문도 이어서 진행해보세요.
+            합판 주문을 완료하셨다면 추가 부자재(피스, 경첩, 손잡이 등) 주문도 이어서 진행해보세요.
           </p>
           <div class="addon-picker">
             <button type="button" id="openAddonModal">부자재 선택하기</button>
@@ -150,7 +150,7 @@
 
         <div class="summary">
           <p>예상 포장비: <span id="packingCost">0</span> 원</p>
-          <p>총 결제금액: <span id="grandTotal">0</span> 원<br /><span class="summary-subtext">(목재 + 부자재 + 포장 + 배송 + VAT)</span></p>
+          <p>총 결제금액: <span id="grandTotal">0</span> 원<br /><span class="summary-subtext">(합판 + 부자재 + 포장 + 배송 + VAT)</span></p>
           <p>네이버 결제 수량: <span id="naverUnits">0</span> 개</p>
         </div>
 
@@ -168,7 +168,7 @@
     <div class="modal-backdrop" id="materialModalBackdrop"></div>
     <div class="modal-content">
       <div class="modal-header">
-        <h3>목재 선택</h3>
+        <h3>합판 선택</h3>
       </div>
       <div class="modal-body">
         <div id="materialTabs" class="material-tabs"></div>
