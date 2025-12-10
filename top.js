@@ -384,10 +384,17 @@ function updateTopPreview(input, detail) {
   const hasSize =
     input.width && input.length && input.thickness && (!needsSecond || input.length2);
 
+  // reset shape container
+  colorEl.innerHTML = "";
+  colorEl.classList.remove("l-shape-preview");
+  colorEl.style.clipPath = "none";
+
   if (!type || !hasSize || !detail) {
     colorEl.style.background = "#ddd";
     colorEl.style.width = "120px";
     colorEl.style.height = "120px";
+    colorEl.style.boxShadow = "inset 0 0 0 1px rgba(0,0,0,0.04)";
+    colorEl.style.clipPath = "none";
     textEl.textContent = "상판과 사이즈를 선택하면 미리보기가 표시됩니다.";
     return;
   }
@@ -397,17 +404,63 @@ function updateTopPreview(input, detail) {
     engineered: "linear-gradient(135deg, #f2f7ff 0%, #d6e4ff 100%)",
     stainless: "linear-gradient(135deg, #f0f0f0 0%, #c7c7c7 100%)",
   };
-  colorEl.style.background = swatchMap[type.id] || "#ddd";
+  const swatch = swatchMap[type.id] || "#ddd";
 
-  const dominantLength = needsSecond ? Math.max(input.length || 0, input.length2 || 0) : input.length;
-  const { w, h } = getPreviewDimensions(input.width, dominantLength, 180, 40);
-  colorEl.style.width = `${w}px`;
-  colorEl.style.height = `${h}px`;
+  if (needsSecond) {
+    const maxPx = 180;
+    const minPx = 40;
+    const overallWidthMm = input.length;
+    const overallHeightMm = Math.max(input.width, input.length2);
+    const scale = Math.min(maxPx / Math.max(overallWidthMm, overallHeightMm), 1);
+    const widthPx = Math.max(12, input.width * scale);
+    const lengthPx = Math.max(minPx, input.length * scale);
+    const length2Px = Math.max(minPx, input.length2 * scale);
+    const overallPxW = Math.max(minPx, overallWidthMm * scale);
+    const overallPxH = Math.max(widthPx, length2Px);
+    const isL = input.shape === "l"; // ㄱ자 (세로 오른쪽), 역ㄱ자 (세로 왼쪽)
+
+    colorEl.classList.add("l-shape-preview");
+    colorEl.style.background = swatch;
+    colorEl.style.boxShadow = "none";
+    colorEl.style.width = `${overallPxW}px`;
+    colorEl.style.height = `${overallPxH}px`;
+
+    if (isL) {
+      // ㄱ자: 세로가 오른쪽
+      colorEl.style.clipPath = `polygon(
+        0px 0px,
+        ${overallPxW}px 0px,
+        ${overallPxW}px ${length2Px}px,
+        ${overallPxW - widthPx}px ${length2Px}px,
+        ${overallPxW - widthPx}px ${widthPx}px,
+        0px ${widthPx}px
+      )`;
+    } else {
+      // 역ㄱ자: 세로가 왼쪽
+      colorEl.style.clipPath = `polygon(
+        ${overallPxW}px 0px,
+        0px 0px,
+        0px ${length2Px}px,
+        ${widthPx}px ${length2Px}px,
+        ${widthPx}px ${widthPx}px,
+        ${overallPxW}px ${widthPx}px
+      )`;
+    }
+  } else {
+    colorEl.style.background = swatch;
+    colorEl.style.boxShadow = "inset 0 0 0 1px rgba(0,0,0,0.04)";
+    colorEl.style.clipPath = "none";
+
+    const { w, h } = getPreviewDimensions(input.width, input.length, 180, 40);
+    colorEl.style.width = `${w}px`;
+    colorEl.style.height = `${h}px`;
+  }
 
   textEl.textContent = needsSecond
     ? `${type.name} / ${input.width}×${input.length} & ${input.width}×${input.length2}×${input.thickness}mm`
     : `${type.name} / ${input.width}×${input.length}×${input.thickness}mm`;
 }
+
 function updateItemQuantity(id, quantity) {
   const idx = state.items.findIndex((it) => it.id === id);
   if (idx === -1) return;
