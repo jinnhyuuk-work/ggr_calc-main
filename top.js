@@ -319,6 +319,8 @@ function renderHoleModal(serviceId) {
 }
 
 let selectedTopType = "";
+const TOP_CATEGORIES = Array.from(new Set(TOP_TYPES.map((t) => t.category || "기타")));
+let selectedTopCategory = TOP_CATEGORIES[0] || "기타";
 let currentPhase = 1; // 1: 상판 선택/입력, 2: 고객정보
 const state = { items: [], serviceDetails: {} };
 let sendingEmail = false;
@@ -340,6 +342,10 @@ const $$ = (sel) => document.querySelectorAll(sel);
 
 function formatPrice(n) {
   return Number(n || 0).toLocaleString();
+}
+
+function descriptionHTML(desc) {
+  return desc ? `<div class="description">${desc}</div>` : "";
 }
 
 function readTopInputs() {
@@ -443,11 +449,35 @@ function updateSelectedTopTypeCard() {
   `;
 }
 
+function renderTopTypeTabs() {
+  const tabs = $("#topTypeTabs");
+  if (!tabs) return;
+  tabs.innerHTML = "";
+  TOP_CATEGORIES.forEach((cat) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = `material-tab${cat === selectedTopCategory ? " active" : ""}`;
+    btn.textContent = cat;
+    btn.addEventListener("click", () => {
+      selectedTopCategory = cat;
+      // 다른 카테고리에 선택된 타입이 있으면 해제
+      const inCategory = TOP_TYPES.some((t) => t.id === selectedTopType && (t.category || "기타") === cat);
+      if (!inCategory) selectedTopType = "";
+      renderTopTypeTabs();
+      renderTopTypeCards();
+      updateSelectedTopTypeCard();
+      refreshTopEstimate();
+    });
+    tabs.appendChild(btn);
+  });
+}
+
 function renderTopTypeCards() {
   const container = $("#topTypeCards");
   if (!container) return;
   container.innerHTML = "";
-  TOP_TYPES.forEach((t) => {
+  const list = TOP_TYPES.filter((t) => (t.category || "기타") === selectedTopCategory);
+  list.forEach((t) => {
     const label = document.createElement("label");
     label.className = `card-base material-card${selectedTopType === t.id ? " selected" : ""}`;
     label.innerHTML = `
@@ -455,6 +485,7 @@ function renderTopTypeCards() {
       <div class="material-visual"></div>
       <div class="name">${t.name}</div>
       <div class="price">기본가 ${formatPrice(t.basePrice)}원</div>
+      ${descriptionHTML(t.description)}
     `;
     container.appendChild(label);
   });
@@ -481,6 +512,7 @@ function renderOptions() {
       <div class="material-visual"></div>
       <div class="name">${opt.name}</div>
       <div class="price">+${formatPrice(opt.price)}원</div>
+      ${descriptionHTML(opt.description)}
     `;
     container.appendChild(label);
   });
@@ -532,7 +564,7 @@ function renderServiceCards() {
       <div class="material-visual" style="background: ${srv.swatch || "#eee"}"></div>
       <div class="name">${srv.label}</div>
       <div class="price">${priceText}</div>
-      <div class="description">${srv.description || ""}</div>
+      ${descriptionHTML(srv.description)}
       <div class="service-actions">
         <div class="service-detail-chip" data-service-summary="${srv.id}">
           ${srv.hasDetail() ? "세부 옵션을 설정해주세요." : "추가 설정 없음"}
@@ -767,6 +799,7 @@ function addTopItem() {
 
 function resetSelections() {
   selectedTopType = "";
+  selectedTopCategory = TOP_CATEGORIES[0] || "기타";
   document.querySelectorAll('input[name="topType"]').forEach((el) => {
     el.checked = false;
     el.closest(".material-card")?.classList.remove("selected");
@@ -1211,6 +1244,7 @@ function resetFlow() {
 }
 
 function initTop() {
+  renderTopTypeTabs();
   renderTopTypeCards();
   renderOptions();
   renderServiceCards();

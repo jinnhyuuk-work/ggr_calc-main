@@ -361,6 +361,10 @@ function getDefaultServiceDetail(serviceId) {
   return cloneServiceDetails(detail);
 }
 
+function descriptionHTML(desc) {
+  return desc ? `<div class="description">${desc}</div>` : "";
+}
+
 function formatHingeDetail(detail, { short = false, includeNote = false } = {}) {
   return formatHoleDetail(detail, { short, includeNote });
 }
@@ -429,7 +433,7 @@ function renderServiceCards() {
       <div class="material-visual" style="background: ${srv.swatch || "#eee"}"></div>
       <div class="name">${srv.label}</div>
       <div class="price">${priceText}</div>
-      <div class="description">${srv.description || ""}</div>
+      ${descriptionHTML(srv.description)}
       <div class="service-actions">
         <div class="service-detail-chip" data-service-summary="${srv.id}">
           ${srv.hasDetail() ? "세부 옵션을 설정해주세요." : "추가 설정 없음"}
@@ -535,6 +539,7 @@ function renderMaterialCards() {
         .map((t) => `${t}T`)
         .join(", ")}</div>
       <div class="size">폭 ${mat.minWidth}~${mat.maxWidth}mm / 길이 ${mat.minLength}~${mat.maxLength}mm</div>
+      ${descriptionHTML(mat.description)}
     `;
     container.appendChild(label);
   });
@@ -583,7 +588,7 @@ function renderAddonCards() {
       <div class="material-visual"></div>
       <div class="name">${item.name}</div>
       <div class="price">${item.price.toLocaleString()}원</div>
-      <div class="description">${item.description || ""}</div>
+      ${descriptionHTML(item.description)}
     `;
     container.appendChild(label);
   });
