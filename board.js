@@ -365,6 +365,16 @@ function descriptionHTML(desc) {
   return desc ? `<div class="description">${desc}</div>` : "";
 }
 
+function escapeHtml(value) {
+  if (value === null || value === undefined) return "";
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function formatHingeDetail(detail, { short = false, includeNote = false } = {}) {
   return formatHoleDetail(detail, { short, includeNote });
 }
@@ -650,7 +660,6 @@ function readCurrentInputs() {
   const thickness = Number($("#thicknessSelect").value);
   const width = Number($("#widthInput").value);
   const length = Number($("#lengthInput").value);
-  const quantity = Number($("#qtyInput")?.value || 1);
 
   const services = Array.from(document.querySelectorAll('input[name="service"]:checked')).map(
     (el) => el.value
@@ -658,12 +667,12 @@ function readCurrentInputs() {
 
   const serviceDetails = cloneServiceDetails(state.serviceDetails);
 
-  return { materialId, thickness, width, length, quantity, services, serviceDetails };
+  return { materialId, thickness, width, length, services, serviceDetails };
 }
 
 // 입력값 검증
 function validateInputs(input) {
-  const { materialId, thickness, width, length, quantity } = input;
+  const { materialId, thickness, width, length } = input;
   const mat = MATERIALS[materialId];
 
   if (!materialId) return "합판을 선택해주세요.";
@@ -678,7 +687,6 @@ function validateInputs(input) {
   const lengthMax = mat?.maxLength ?? LENGTH_MAX;
   if (length < lengthMin || length > lengthMax)
     return `길이는 ${lengthMin} ~ ${lengthMax}mm 사이여야 합니다.`;
-  if (!quantity || quantity <= 0) return "수량은 1개 이상이어야 합니다.";
 
   const material = mat;
   if (!material.availableThickness?.includes(thickness)) {
@@ -699,12 +707,14 @@ if (addItemBtn) {
       return;
     }
 
-    const detail = calcItemDetail(input);
+    const quantity = 1;
+    const detail = calcItemDetail({ ...input, quantity });
     const itemServiceDetails = cloneServiceDetails(input.serviceDetails);
 
     state.items.push({
       id: crypto.randomUUID(),
       ...input,
+      quantity,
       serviceDetails: itemServiceDetails,
       ...detail,
     });
@@ -940,7 +950,7 @@ function renderTable() {
     const servicesText = isAddon ? "-" : formatServiceList(item.services, item.serviceDetails);
 
     tr.innerHTML = `
-      <td>${materialName}</td>
+      <td>${escapeHtml(materialName)}</td>
       <td>
         <input
           type="number"
@@ -964,7 +974,7 @@ function renderTable() {
       detailRow.innerHTML = `
         <td colspan="4">
           <div class="sub-detail">
-            <div class="detail-line">부자재 ${materialName}</div>
+            <div class="detail-line">부자재 ${escapeHtml(materialName)}</div>
             <div class="detail-line">상품가 ${item.materialCost.toLocaleString()}원 · VAT ${item.vat.toLocaleString()}원</div>
           </div>
         </td>
@@ -973,7 +983,7 @@ function renderTable() {
       detailRow.innerHTML = `
         <td colspan="4">
           <div class="sub-detail">
-            <div class="detail-line">주문크기 ${sizeText} · 가공 ${servicesText}</div>
+            <div class="detail-line">주문크기 ${escapeHtml(sizeText)} · 가공 ${escapeHtml(servicesText)}</div>
           <div class="detail-line">합판비 ${item.materialCost.toLocaleString()}원 · 가공비 ${item.processingCost.toLocaleString()}원 · VAT ${item.vat.toLocaleString()}원</div>
           </div>
         </td>
@@ -1180,17 +1190,17 @@ function renderOrderCompleteDetails() {
             const servicesText = isAddon
               ? "-"
               : formatServiceList(item.services, item.serviceDetails, { includeNote: true });
-            return `<p class="item-line">${idx + 1}. ${materialName} x${item.quantity} · 크기 ${sizeText} · 가공 ${servicesText} · 금액 ${item.total.toLocaleString()}원</p>`;
+            return `<p class="item-line">${idx + 1}. ${escapeHtml(materialName)} x${item.quantity} · 크기 ${escapeHtml(sizeText)} · 가공 ${escapeHtml(servicesText)} · 금액 ${item.total.toLocaleString()}원</p>`;
           })
           .join("");
 
   container.innerHTML = `
     <div class="complete-section">
       <h4>고객 정보</h4>
-      <p>이름: ${customer.name || "-"}</p>
-      <p>연락처: ${customer.phone || "-"}</p>
-      <p>이메일: ${customer.email || "-"}</p>
-      <p>요청사항: ${customer.memo || "-"}</p>
+      <p>이름: ${escapeHtml(customer.name || "-")}</p>
+      <p>연락처: ${escapeHtml(customer.phone || "-")}</p>
+      <p>이메일: ${escapeHtml(customer.email || "-")}</p>
+      <p>요청사항: ${escapeHtml(customer.memo || "-")}</p>
     </div>
     <div class="complete-section">
       <h4>주문 품목</h4>
@@ -1333,7 +1343,7 @@ function autoCalculatePrice() {
     updateAddItemState();
     return;
   }
-  const detail = calcItemDetail(input);
+  const detail = calcItemDetail({ ...input, quantity: 1 });
   $("#itemPriceDisplay").textContent =
     `금액(부가세 포함): ${detail.total.toLocaleString()}원 ` +
     `(합판비 ${detail.materialCost.toLocaleString()} + 가공비 ${detail.processingCost.toLocaleString()})`;
@@ -1765,13 +1775,6 @@ function init() {
     updateModalCardPreviews();
     updateSelectedMaterialLabel();
   });
-  const qtyInputEl = $("#qtyInput");
-  if (qtyInputEl) {
-    qtyInputEl.addEventListener("input", () => {
-      autoCalculatePrice();
-      updatePreview();
-    });
-  }
   $("#thicknessSelect").addEventListener("change", () => {
     resetServiceOptions();
     autoCalculatePrice();

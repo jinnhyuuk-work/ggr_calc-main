@@ -348,6 +348,16 @@ function descriptionHTML(desc) {
   return desc ? `<div class="description">${desc}</div>` : "";
 }
 
+function escapeHtml(value) {
+  if (value === null || value === undefined) return "";
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function readTopInputs() {
   const typeId = selectedTopType;
   const shape = $("#kitchenShape")?.value || "";
@@ -714,7 +724,7 @@ function renderTable() {
     const addonInfo = isAddon ? TOP_ADDON_ITEMS.find((a) => a.id === item.addonId) : null;
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${isAddon ? addonInfo?.name || "부자재" : item.typeName}</td>
+      <td>${escapeHtml(isAddon ? addonInfo?.name || "부자재" : item.typeName)}</td>
       <td>
         <input
           type="number"
@@ -737,7 +747,7 @@ function renderTable() {
       detailRow.innerHTML = `
         <td colspan="4">
           <div class="sub-detail">
-            <div class="detail-line">부자재 ${addonInfo?.name || "부자재"}</div>
+            <div class="detail-line">부자재 ${escapeHtml(addonInfo?.name || "부자재")}</div>
             <div class="detail-line">상품가 ${item.materialCost.toLocaleString()}원 · VAT ${item.vat.toLocaleString()}원</div>
           </div>
         </td>
@@ -747,7 +757,7 @@ function renderTable() {
       detailRow.innerHTML = `
         <td colspan="4">
           <div class="sub-detail">
-            <div class="detail-line">사이즈 ${item.displaySize} · 옵션 ${item.optionsLabel} · 가공 ${item.servicesLabel || "-"}</div>
+            <div class="detail-line">사이즈 ${escapeHtml(item.displaySize)} · 옵션 ${escapeHtml(item.optionsLabel)} · 가공 ${escapeHtml(item.servicesLabel || "-")}</div>
             <div class="detail-line">상판비 ${baseCost.toLocaleString()}원 · 가공비 ${item.processingCost.toLocaleString()}원 · VAT ${item.vat.toLocaleString()}원</div>
           </div>
         </td>
@@ -804,10 +814,10 @@ function renderOrderCompleteDetails() {
       : state.items
           .map(
             (item, idx) =>
-              `<p class="item-line">${idx + 1}. ${item.type === "addon" ? "부자재" : "상판"} ${item.typeName} x${item.quantity}${
+              `<p class="item-line">${idx + 1}. ${item.type === "addon" ? "부자재" : "상판"} ${escapeHtml(item.typeName)} x${item.quantity}${
                 item.type === "addon"
                   ? ""
-                  : ` · 크기 ${item.displaySize} · 옵션 ${item.optionsLabel} · 가공 ${item.servicesLabel || "-"}`
+                  : ` · 크기 ${escapeHtml(item.displaySize)} · 옵션 ${escapeHtml(item.optionsLabel)} · 가공 ${escapeHtml(item.servicesLabel || "-")}`
               } · 금액 ${item.total.toLocaleString()}원</p>`
           )
           .join("");
@@ -815,10 +825,10 @@ function renderOrderCompleteDetails() {
   container.innerHTML = `
     <div class="complete-section">
       <h4>고객 정보</h4>
-      <p>이름: ${customer.name || "-"}</p>
-      <p>연락처: ${customer.phone || "-"}</p>
-      <p>이메일: ${customer.email || "-"}</p>
-      <p>요청사항: ${customer.memo || "-"}</p>
+      <p>이름: ${escapeHtml(customer.name || "-")}</p>
+      <p>연락처: ${escapeHtml(customer.phone || "-")}</p>
+      <p>이메일: ${escapeHtml(customer.email || "-")}</p>
+      <p>요청사항: ${escapeHtml(customer.memo || "-")}</p>
     </div>
     <div class="complete-section">
       <h4>주문 품목</h4>
