@@ -88,37 +88,52 @@ export function initEmailJS() {
   }
 }
 
-function getDocSize() {
-    const de = document.documentElement;
-    const b = document.body;
+const IFRAME_MESSAGE_TYPE = "GGR_IFRAME_SIZE";
+const PARENT_ORIGIN = "https://ggr.kr";
 
-    const width = Math.max(
-      de.scrollWidth, de.offsetWidth,
-      b ? b.scrollWidth : 0,
-      b ? b.offsetWidth : 0
+function calcDocHeight() {
+  const de = document.documentElement;
+  const b = document.body;
+  return Math.max(
+    de.scrollHeight, de.offsetHeight,
+    b ? b.scrollHeight : 0,
+    b ? b.offsetHeight : 0
+  );
+}
+
+function createHeightSender() {
+  let lastHeight = 0;
+  let scheduled = false;
+
+  const sendHeight = () => {
+    scheduled = false;
+    const height = calcDocHeight();
+    if (height === lastHeight) return;
+    lastHeight = height;
+    window.parent?.postMessage(
+      { type: IFRAME_MESSAGE_TYPE, height },
+      PARENT_ORIGIN
     );
+  };
 
-    const height = Math.max(
-      de.scrollHeight, de.offsetHeight,
-      b ? b.scrollHeight : 0,
-      b ? b.offsetHeight : 0
-    );
+  return () => {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(sendHeight);
+  };
+}
 
-    return { width, height };
+if (typeof window !== "undefined") {
+  const scheduleSendHeight = createHeightSender();
+
+  window.addEventListener("load", scheduleSendHeight);
+  window.addEventListener("resize", scheduleSendHeight);
+
+  if ("ResizeObserver" in window) {
+    const ro = new ResizeObserver(() => scheduleSendHeight());
+    ro.observe(document.documentElement);
   }
 
-  function sendSize() {
-    const { width, height } = getDocSize();
-    window.parent.postMessage(
-      { type: "GGR_IFRAME_SIZE", width, height },
-      "ggr.kr" // 가능하면 부모 도메인으로 고정해라(보안)
-    );
-  }
-
-  // 기본: 로드/리사이즈 때 전송
-  window.addEventListener("load", sendSize);
-  window.addEventListener("resize", sendSize);
-
-  // 콘텐츠가 동적으로 바뀌는 경우 대비: ResizeObserver 추천
-  const ro = new ResizeObserver(() => sendSize());
-  ro.observe(document.documentElement);
+  setTimeout(scheduleSendHeight, 300);
+  setTimeout(scheduleSendHeight, 1000);
+}
