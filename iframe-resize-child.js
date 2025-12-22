@@ -1,6 +1,15 @@
 (() => {
   const MESSAGE_TYPE = "GGR_IFRAME_SIZE";
-  const PARENT_ORIGIN = "https://ggr.kr";
+  const DEFAULT_PARENT_ORIGIN = "https://ggr.kr";
+  const parentOrigin = (() => {
+    const referrer = typeof document === "undefined" ? "" : document.referrer;
+    if (!referrer) return DEFAULT_PARENT_ORIGIN;
+    try {
+      return new URL(referrer).origin;
+    } catch {
+      return DEFAULT_PARENT_ORIGIN;
+    }
+  })();
 
   function calcDocHeight() {
     const de = document.documentElement;
@@ -21,9 +30,10 @@
       const height = calcDocHeight();
       if (height === lastHeight) return;
       lastHeight = height;
-      window.parent?.postMessage(
+      if (!window.parent || window.parent === window) return;
+      window.parent.postMessage(
         { type: MESSAGE_TYPE, height },
-        PARENT_ORIGIN
+        parentOrigin
       );
     };
 
