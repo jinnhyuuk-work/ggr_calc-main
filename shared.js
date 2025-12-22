@@ -87,3 +87,38 @@ export function initEmailJS() {
     });
   }
 }
+
+function getDocSize() {
+    const de = document.documentElement;
+    const b = document.body;
+
+    const width = Math.max(
+      de.scrollWidth, de.offsetWidth,
+      b ? b.scrollWidth : 0,
+      b ? b.offsetWidth : 0
+    );
+
+    const height = Math.max(
+      de.scrollHeight, de.offsetHeight,
+      b ? b.scrollHeight : 0,
+      b ? b.offsetHeight : 0
+    );
+
+    return { width, height };
+  }
+
+  function sendSize() {
+    const { width, height } = getDocSize();
+    window.parent.postMessage(
+      { type: "GGR_IFRAME_SIZE", width, height },
+      "ggr.kr" // 가능하면 부모 도메인으로 고정해라(보안)
+    );
+  }
+
+  // 기본: 로드/리사이즈 때 전송
+  window.addEventListener("load", sendSize);
+  window.addEventListener("resize", sendSize);
+
+  // 콘텐츠가 동적으로 바뀌는 경우 대비: ResizeObserver 추천
+  const ro = new ResizeObserver(() => sendSize());
+  ro.observe(document.documentElement);
