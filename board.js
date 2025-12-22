@@ -4,7 +4,16 @@ import {
   BOARD_ADDON_ITEMS,
   MATERIAL_CATEGORIES_DESC,
 } from "./data.js";
-import { VAT_RATE, calcPackingCost, calcShippingCost, initEmailJS, EMAILJS_CONFIG } from "./shared.js";
+import {
+  VAT_RATE,
+  calcPackingCost,
+  calcShippingCost,
+  initEmailJS,
+  EMAILJS_CONFIG,
+  readCustomerInfo,
+  computeSendEnabled,
+  resetConsent,
+} from "./shared.js";
 
 class BaseService {
   constructor(cfg) {
@@ -313,14 +322,6 @@ function calcOrderSummary(items) {
   };
 }
 
-function getCustomerInfo() {
-  return {
-    name: $("#customerName")?.value.trim() || "",
-    phone: $("#customerPhone")?.value.trim() || "",
-    email: $("#customerEmail")?.value.trim() || "",
-    memo: $("#customerMemo")?.value.trim() || "",
-  };
-}
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
@@ -1055,7 +1056,7 @@ function renderSummary() {
 }
 
 function buildEmailContent() {
-  const customer = getCustomerInfo();
+  const customer = readCustomerInfo();
   const summary = calcOrderSummary(state.items);
 
   const lines = [];
@@ -1104,13 +1105,15 @@ function buildEmailContent() {
 function updateSendButtonEnabled() {
   const btn = $("#sendQuoteBtn");
   if (!btn) return;
-  const customer = getCustomerInfo();
-  const hasRequired = Boolean(customer.name && customer.phone && customer.email);
-  const hasItems = state.items.length > 0;
-  const onFinalStep = currentPhase === 3;
-  const consentEl = document.getElementById("privacyConsent");
-  const hasConsent = consentEl ? consentEl.checked : true;
-  btn.disabled = !(hasRequired && hasItems && onFinalStep && hasConsent) || sendingEmail;
+  const customer = readCustomerInfo();
+  const enabled = computeSendEnabled({
+    customer,
+    hasItems: state.items.length > 0,
+    onFinalStep: currentPhase === 3,
+    sending: sendingEmail,
+    consentSelector: "#privacyConsent",
+  });
+  btn.disabled = !enabled;
 }
 
 function resetOrderCompleteUI() {
@@ -1169,8 +1172,7 @@ function resetFlow() {
   const summaryCard = document.getElementById("stepFinal");
   summaryCard?.classList.remove("order-complete-visible");
   summaryCard?.classList.remove("hidden-step");
-  const consentEl = document.getElementById("privacyConsent");
-  if (consentEl) consentEl.checked = false;
+  resetConsent("#privacyConsent");
   updateSendButtonEnabled();
 }
 
@@ -1225,7 +1227,7 @@ async function sendQuote() {
     showInfoModal("담긴 항목이 없습니다. 주문을 담아주세요.");
     return;
   }
-  const customer = getCustomerInfo();
+  const customer = readCustomerInfo();
   if (!customer.name || !customer.phone || !customer.email) {
     showInfoModal("이름, 연락처, 이메일을 입력해주세요.");
     return;

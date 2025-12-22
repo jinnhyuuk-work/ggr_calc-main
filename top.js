@@ -1,4 +1,11 @@
-import { VAT_RATE, EMAILJS_CONFIG, initEmailJS } from "./shared.js";
+import {
+  VAT_RATE,
+  EMAILJS_CONFIG,
+  initEmailJS,
+  readCustomerInfo,
+  computeSendEnabled,
+  resetConsent,
+} from "./shared.js";
 import { TOP_PROCESSING_SERVICES, TOP_TYPES, TOP_OPTIONS, TOP_ADDON_ITEMS } from "./data.js";
 
 class BaseService {
@@ -1284,29 +1291,22 @@ function showOrderComplete() {
   updateStepVisibility();
 }
 
-function getCustomerInfo() {
-  return {
-    name: $("#customerName")?.value.trim() || "",
-    phone: $("#customerPhone")?.value.trim() || "",
-    email: $("#customerEmail")?.value.trim() || "",
-    memo: $("#customerMemo")?.value.trim() || "",
-  };
-}
-
 function updateSendButtonEnabled() {
   const btn = $("#sendQuoteBtn");
   if (!btn) return;
-  const customer = getCustomerInfo();
-  const hasRequired = Boolean(customer.name && customer.phone && customer.email);
-  const hasItems = state.items.length > 0;
-  const onFinalStep = currentPhase === 3;
-  const consentEl = document.getElementById("privacyConsent");
-  const hasConsent = consentEl ? consentEl.checked : true;
-  btn.disabled = !(hasRequired && hasItems && onFinalStep && hasConsent) || sendingEmail;
+  const customer = readCustomerInfo();
+  const enabled = computeSendEnabled({
+    customer,
+    hasItems: state.items.length > 0,
+    onFinalStep: currentPhase === 3,
+    sending: sendingEmail,
+    consentSelector: "#privacyConsent",
+  });
+  btn.disabled = !enabled;
 }
 
 function buildEmailContent() {
-  const customer = getCustomerInfo();
+  const customer = readCustomerInfo();
   const materialsTotal = state.items.reduce((sum, it) => sum + it.subtotal, 0);
   const grandTotal = state.items.reduce((sum, it) => sum + it.total, 0);
 
@@ -1349,7 +1349,7 @@ async function sendQuote() {
     showInfoModal("담긴 항목이 없습니다. 상판을 담아주세요.");
     return;
   }
-  const customer = getCustomerInfo();
+  const customer = readCustomerInfo();
   if (!customer.name || !customer.phone || !customer.email) {
     showInfoModal("이름, 연락처, 이메일을 입력해주세요.");
     return;
@@ -1417,8 +1417,7 @@ function resetFlow() {
   updateSendButtonEnabled();
   renderTopAddonCards();
   updateSelectedTopAddonsDisplay();
-  const consentEl = document.getElementById("privacyConsent");
-  if (consentEl) consentEl.checked = false;
+  resetConsent("#privacyConsent");
 }
 
 function initTop() {
