@@ -187,6 +187,10 @@ b[lang="en"],
   background: url(../img/page/index/board-service.jpg) center/100% auto no-repeat;
 }
 
+.landing-thumb.door {
+  background: url(../img/page/index/board-service.jpg) center/100% auto no-repeat;
+}
+
 .landing-thumb.top {
   background: url(../img/page/index/top-service.jpg) center/100% auto no-repeat;
 }

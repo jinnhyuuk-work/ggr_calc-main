@@ -1416,6 +1416,8 @@ export const MATERIALS = {
   },
 };
 
+export const DOOR_MATERIALS = { ...MATERIALS };
+
 export const MATERIAL_CATEGORIES_DESC = {
   집성목: "집성목은 여러 목재를 접합하여 안정성과 강도를 높인 판재입니다.",
   MDF: "MDF는 섬유를 압축해 만든 판재로 가공과 도장이 용이합니다.",
@@ -1426,6 +1428,8 @@ export const MATERIAL_CATEGORIES_DESC = {
   "Original PET": "오리지널 PET 마감재 카테고리입니다.",
   LPM: "LPM 마감재 카테고리입니다.",
 };
+
+export const DOOR_MATERIAL_CATEGORIES_DESC = { ...MATERIAL_CATEGORIES_DESC };
 
 // 공통 가공 서비스 정의(필요 시 각 도메인에서 확장)
 const COMMON_PROCESSING_SERVICES = {
@@ -1452,13 +1456,12 @@ export const BOARD_PROCESSING_SERVICES = {
   ...COMMON_PROCESSING_SERVICES,
 };
 
-export const TOP_PROCESSING_SERVICES = {
+export const DOOR_PROCESSING_SERVICES = {
   ...COMMON_PROCESSING_SERVICES,
 };
 
-export const PACKING_SETTINGS = {
-  packingPricePerKg: 400,
-  basePackingPrice: 2000,
+export const TOP_PROCESSING_SERVICES = {
+  ...COMMON_PROCESSING_SERVICES,
 };
 
 // 상판(Top) 데이터
@@ -1695,4 +1698,5 @@ const COMMON_ADDON_ITEMS = [
 ];
 
 export const BOARD_ADDON_ITEMS = [...COMMON_ADDON_ITEMS];
+export const DOOR_ADDON_ITEMS = [...COMMON_ADDON_ITEMS];
 export const TOP_ADDON_ITEMS = [...COMMON_ADDON_ITEMS];
