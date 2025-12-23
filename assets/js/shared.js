@@ -77,3 +77,56 @@ export function closeModal(modal, { bodySelector = ".modal-body", resetScroll = 
   if (resetScroll) resetModalScroll(modalEl, bodySelector);
   modalEl?.classList.add("hidden");
 }
+
+export function getCustomerInfo({
+  nameSelector = "#customerName",
+  phoneSelector = "#customerPhone",
+  emailSelector = "#customerEmail",
+  memoSelector = "#customerMemo",
+} = {}) {
+  return {
+    name: document.querySelector(nameSelector)?.value.trim() || "",
+    phone: document.querySelector(phoneSelector)?.value.trim() || "",
+    email: document.querySelector(emailSelector)?.value.trim() || "",
+    memo: document.querySelector(memoSelector)?.value.trim() || "",
+  };
+}
+
+export function validateCustomerInfo(customer) {
+  if (!customer?.name || !customer?.phone || !customer?.email) {
+    return "이름, 연락처, 이메일을 입력해주세요.";
+  }
+  return "";
+}
+
+export function isConsentChecked(selector = "#privacyConsent") {
+  const el = document.querySelector(selector);
+  return el ? el.checked : true;
+}
+
+export function updateSendButtonEnabled({
+  buttonSelector = "#sendQuoteBtn",
+  customer = getCustomerInfo(),
+  hasItems = false,
+  onFinalStep = false,
+  hasConsent = isConsentChecked(),
+  sending = false,
+} = {}) {
+  const btn = document.querySelector(buttonSelector);
+  if (!btn) return;
+  const hasRequired = Boolean(customer.name && customer.phone && customer.email);
+  btn.disabled = !(hasRequired && hasItems && onFinalStep && hasConsent) || sending;
+}
+
+export function getEmailJSInstance(showInfoModal) {
+  if (!EMAILJS_CONFIG.serviceId || !EMAILJS_CONFIG.templateId || !EMAILJS_CONFIG.publicKey) {
+    showInfoModal?.("EmailJS 설정(서비스ID/템플릿ID/publicKey)을 입력해주세요.");
+    return null;
+  }
+  const emailjsInstance = typeof window !== "undefined" ? window.emailjs : null;
+  if (!emailjsInstance) {
+    showInfoModal?.("EmailJS 스크립트가 로드되지 않았습니다.");
+    return null;
+  }
+  return emailjsInstance;
+}

@@ -1,4 +1,15 @@
-import { VAT_RATE, EMAILJS_CONFIG, initEmailJS, openModal, closeModal } from "./shared.js";
+import {
+  VAT_RATE,
+  EMAILJS_CONFIG,
+  initEmailJS,
+  openModal,
+  closeModal,
+  getCustomerInfo,
+  validateCustomerInfo,
+  updateSendButtonEnabled as updateSendButtonEnabledShared,
+  isConsentChecked,
+  getEmailJSInstance,
+} from "./shared.js";
 import { TOP_PROCESSING_SERVICES, TOP_TYPES, TOP_OPTIONS, TOP_ADDON_ITEMS } from "./data.js";
 
 class BaseService {
@@ -1353,25 +1364,15 @@ function showOrderComplete() {
   updateStepVisibility();
 }
 
-function getCustomerInfo() {
-  return {
-    name: $("#customerName")?.value.trim() || "",
-    phone: $("#customerPhone")?.value.trim() || "",
-    email: $("#customerEmail")?.value.trim() || "",
-    memo: $("#customerMemo")?.value.trim() || "",
-  };
-}
-
 function updateSendButtonEnabled() {
-  const btn = $("#sendQuoteBtn");
-  if (!btn) return;
   const customer = getCustomerInfo();
-  const hasRequired = Boolean(customer.name && customer.phone && customer.email);
-  const hasItems = state.items.length > 0;
-  const onFinalStep = currentPhase === 3;
-  const consentEl = document.getElementById("privacyConsent");
-  const hasConsent = consentEl ? consentEl.checked : true;
-  btn.disabled = !(hasRequired && hasItems && onFinalStep && hasConsent) || sendingEmail;
+  updateSendButtonEnabledShared({
+    customer,
+    hasItems: state.items.length > 0,
+    onFinalStep: currentPhase === 3,
+    hasConsent: isConsentChecked(),
+    sending: sendingEmail,
+  });
 }
 
 function buildEmailContent() {
@@ -1419,19 +1420,13 @@ async function sendQuote() {
     return;
   }
   const customer = getCustomerInfo();
-  if (!customer.name || !customer.phone || !customer.email) {
-    showInfoModal("이름, 연락처, 이메일을 입력해주세요.");
+  const customerError = validateCustomerInfo(customer);
+  if (customerError) {
+    showInfoModal(customerError);
     return;
   }
-  if (!EMAILJS_CONFIG.serviceId || !EMAILJS_CONFIG.templateId || !EMAILJS_CONFIG.publicKey) {
-    showInfoModal("EmailJS 설정(서비스ID/템플릿ID/publicKey)을 입력해주세요.");
-    return;
-  }
-  const emailjsInstance = window.emailjs;
-  if (!emailjsInstance) {
-    showInfoModal("EmailJS 스크립트가 로드되지 않았습니다.");
-    return;
-  }
+  const emailjsInstance = getEmailJSInstance(showInfoModal);
+  if (!emailjsInstance) return;
 
   sendingEmail = true;
   updateSendButtonEnabled();
