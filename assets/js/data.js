@@ -415,7 +415,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/01-hansol-pet-perfectwhite.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_02",
@@ -428,7 +428,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/02-hansol-pet-perfectwhite-glossy.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_03",
@@ -441,7 +441,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/03-hansol-pet-foggray.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_04",
@@ -454,7 +454,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/04-hansol-pet-lightgray.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_05",
@@ -467,7 +467,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/05-hansol-pet-dovewhite.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_06",
@@ -480,7 +480,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/06-hansol-pet-truepearlwhite.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_07",
@@ -493,7 +493,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/07-hansol-pet-sandgray.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_08",
@@ -506,7 +506,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/08-hansol-pet-sandgray-glossy.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_09",
@@ -519,7 +519,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/09-hansol-pet-creamwhite.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_10",
@@ -532,7 +532,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/10-hansol-pet-creamwhite-glossy.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_11",
@@ -545,7 +545,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/11-hansol-pet-satinbeige.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_12",
@@ -558,7 +558,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/12-hansol-pet-ashbeige.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_13",
@@ -571,7 +571,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/13-hansol-pet-rosypink.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_14",
@@ -584,7 +584,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/14-hansol-pet-lotuspink.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_15",
@@ -597,7 +597,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/15-hansol-pet-monogray.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_16",
@@ -610,7 +610,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/16-hansol-pet-monogray-glossy.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_17",
@@ -623,7 +623,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/17-hansol-pet-mistgreen.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_18",
@@ -636,7 +636,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/18-hansol-pet-jaspergreen.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_19",
@@ -649,7 +649,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/19-hansol-pet-darkgray.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_20",
@@ -662,7 +662,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/20-hansol-pet-darkgray-glossy.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_21",
@@ -675,7 +675,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/21-hansol-pet-cottonblue.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_22",
@@ -688,7 +688,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/22-hansol-pet-smokyolive.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_23",
@@ -701,7 +701,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/23-hansol-pet-indigoblue.jpg') center/cover no-repeat",
   },
   {
     id: "hansol_pet_24",
@@ -714,7 +714,7 @@ const HANSOL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f0f6ff 0%, #d1e6ff 100%)",
+    swatch: "url('assets/img/product/board/04-hansol-pet/24-hansol-pet-luxeblack.jpg') center/cover no-repeat",
   },
 ];
 
@@ -730,7 +730,7 @@ const ORIGINAL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f7f7f7 0%, #dcdde0 100%)",
+    swatch: "url('assets/img/product/board/05-original-pet/01-original-pet-satin-yellow-matte.jpg') center/cover no-repeat",
   },
   {
     id: "original_pet_02",
@@ -743,7 +743,7 @@ const ORIGINAL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f7f7f7 0%, #dcdde0 100%)",
+    swatch: "ur",
   },
   {
     id: "original_pet_03",
@@ -756,7 +756,7 @@ const ORIGINAL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f7f7f7 0%, #dcdde0 100%)",
+    swatch: "ur",
   },
   {
     id: "original_pet_04",
@@ -769,7 +769,7 @@ const ORIGINAL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f7f7f7 0%, #dcdde0 100%)",
+    swatch: "ur",
   },
   {
     id: "original_pet_05",
@@ -782,7 +782,7 @@ const ORIGINAL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f7f7f7 0%, #dcdde0 100%)",
+    swatch: "ur",
   },
   {
     id: "original_pet_06",
@@ -795,7 +795,7 @@ const ORIGINAL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f7f7f7 0%, #dcdde0 100%)",
+    swatch: "ur",
   },
   {
     id: "original_pet_07",
@@ -808,7 +808,7 @@ const ORIGINAL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f7f7f7 0%, #dcdde0 100%)",
+    swatch: "ur",
   },
   {
     id: "original_pet_08",
@@ -821,7 +821,7 @@ const ORIGINAL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f7f7f7 0%, #dcdde0 100%)",
+    swatch: "ur",
   },
   {
     id: "original_pet_09",
@@ -834,7 +834,7 @@ const ORIGINAL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f7f7f7 0%, #dcdde0 100%)",
+    swatch: "ur",
   },
   {
     id: "original_pet_10",
@@ -847,7 +847,7 @@ const ORIGINAL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f7f7f7 0%, #dcdde0 100%)",
+    swatch: "ur",
   },
   {
     id: "original_pet_11",
@@ -860,7 +860,7 @@ const ORIGINAL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f7f7f7 0%, #dcdde0 100%)",
+    swatch: "ur",
   },
   {
     id: "original_pet_12",
@@ -873,7 +873,7 @@ const ORIGINAL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f7f7f7 0%, #dcdde0 100%)",
+    swatch: "ur",
   },
   {
     id: "original_pet_13",
@@ -886,7 +886,7 @@ const ORIGINAL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f7f7f7 0%, #dcdde0 100%)",
+    swatch: "ur",
   },
   {
     id: "original_pet_14",
@@ -899,7 +899,7 @@ const ORIGINAL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f7f7f7 0%, #dcdde0 100%)",
+    swatch: "ur",
   },
   {
     id: "original_pet_15",
@@ -912,7 +912,7 @@ const ORIGINAL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f7f7f7 0%, #dcdde0 100%)",
+    swatch: "ur",
   },
   {
     id: "original_pet_16",
@@ -925,7 +925,7 @@ const ORIGINAL_PET_ITEMS = [
     maxWidth: 1200,
     minLength: 100,
     maxLength: 2400,
-    swatch: "linear-gradient(135deg, #f7f7f7 0%, #dcdde0 100%)",
+    swatch: "ur",
   },
 ];
 

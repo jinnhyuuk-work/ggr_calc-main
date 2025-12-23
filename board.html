@@ -210,14 +210,16 @@
     <div class="modal-backdrop" id="materialModalBackdrop"></div>
     <div class="modal-content">
       <div class="modal-header">
-        <h3>합판 선택</h3>
+        <h3 id="materialModalTitle" tabindex="-1">합판 선택</h3>
       </div>
-      <div class="modal-body">
+      <div class="modal-tabs">
         <div id="materialTabs" class="material-tabs"></div>
         <div class="material-category-header">
           <div id="materialCategoryName" class="material-category-title"></div>
           <p id="materialCategoryDesc" class="material-category-desc"></p>
         </div>
+      </div>
+      <div class="modal-body">
         <div id="materialCards" class="material-grid"></div>
       </div>
       <div class="modal-footer">
@@ -230,7 +232,7 @@
     <div class="modal-backdrop" id="addonModalBackdrop"></div>
     <div class="modal-content">
       <div class="modal-header">
-        <h3>부자재 선택</h3>
+        <h3 id="addonModalTitle" tabindex="-1">부자재 선택</h3>
       </div>
       <div class="modal-body">
         <div id="addonCards" class="material-grid addon-grid"></div>
@@ -245,7 +247,7 @@
     <div class="modal-backdrop" id="serviceModalBackdrop"></div>
     <div class="modal-content">
       <div class="modal-header">
-        <h3 id="serviceModalTitle">가공 옵션 설정</h3>
+        <h3 id="serviceModalTitle" tabindex="-1">가공 옵션 설정</h3>
       </div>
       <div id="serviceModalError" class="error-msg"></div>
       <div class="modal-body" id="serviceModalBody"></div>
@@ -260,7 +262,7 @@
     <div class="modal-backdrop" id="infoModalBackdrop"></div>
     <div class="modal-content">
       <div class="modal-header">
-        <h3>안내</h3>
+        <h3 id="infoModalTitle" tabindex="-1">안내</h3>
       </div>
       <div id="infoMessage" class="info-message">안내 메시지</div>
       <div class="modal-footer">

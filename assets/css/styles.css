@@ -1053,6 +1053,12 @@ th, td {
   margin-bottom: 10px;
 }
 
+.modal-tabs {
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-border);
+}
+
 .modal-close {
   background: #eee;
   color: var(--color-text);
@@ -1093,7 +1099,9 @@ th, td {
 }
 .modal-body {
   flex: 1;
-  overflow: auto;
+  overflow-y: auto;
+  min-height: 0;
+  overflow-anchor: none;
   scrollbar-width: none; /* Firefox */
 }
 

@@ -1106,6 +1106,7 @@ function openServiceModal(serviceId, triggerCheckbox, mode = "change") {
   serviceModalDraft = cloneServiceDetails(state.serviceDetails[serviceId]) || getDefaultServiceDetail(serviceId);
   renderServiceModalContent(serviceId);
   $("#topServiceModal")?.classList.remove("hidden");
+  $("#topServiceModalTitle")?.focus();
 }
 
 function closeServiceModal(revertSelection = true) {
@@ -1181,6 +1182,7 @@ function showInfoModal(message) {
   const msgEl = $("#infoMessage");
   if (msgEl) msgEl.textContent = message;
   modal?.classList.remove("hidden");
+  $("#infoModalTitle")?.focus();
 }
 
 function closeInfoModal() {
@@ -1479,6 +1481,7 @@ function initTop() {
 
 function openTopTypeModal() {
   $("#topTypeModal")?.classList.remove("hidden");
+  $("#topTypeModalTitle")?.focus();
 }
 
 function closeTopTypeModal() {
@@ -1487,6 +1490,7 @@ function closeTopTypeModal() {
 
 function openTopAddonModal() {
   $("#topAddonModal")?.classList.remove("hidden");
+  $("#topAddonModalTitle")?.focus();
 }
 
 function closeTopAddonModal() {

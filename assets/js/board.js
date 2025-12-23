@@ -568,6 +568,7 @@ function renderMaterialCards() {
     updatePreview();
     $$(".material-card").forEach((card) => card.classList.remove("selected"));
     input.closest(".material-card")?.classList.add("selected");
+    input.blur();
     closeMaterialModal();
   };
   if (selectedMaterialId) updateThicknessOptions(selectedMaterialId);
@@ -824,6 +825,7 @@ function showInfoModal(message) {
   const msgEl = document.getElementById("infoMessage");
   if (msgEl) msgEl.textContent = message;
   modal?.classList.remove("hidden");
+  document.getElementById("infoModalTitle")?.focus();
 }
 
 function closeInfoModal() {
@@ -1642,6 +1644,7 @@ function openServiceModal(serviceId, triggerCheckbox, mode = "change") {
   serviceModalDraft = cloneServiceDetails(state.serviceDetails[serviceId]) || getDefaultServiceDetail(serviceId);
   renderServiceModalContent(serviceId);
   $("#serviceModal")?.classList.remove("hidden");
+  $("#serviceModalTitle")?.focus();
 }
 
 function closeServiceModal(revertSelection = true) {
@@ -1686,15 +1689,34 @@ function saveServiceModal() {
 }
 
 function openMaterialModal() {
-  $("#materialModal")?.classList.remove("hidden");
+  document.activeElement?.blur();
+  const modal = $("#materialModal");
+  modal?.classList.remove("hidden");
+  $("#materialModalTitle")?.focus();
+  const body = modal?.querySelector(".modal-body");
+  if (body) {
+    body.scrollTop = 0;
+    body.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    requestAnimationFrame(() => {
+      body.scrollTop = 0;
+    });
+    setTimeout(() => {
+      body.scrollTop = 0;
+    }, 0);
+  }
 }
 
 function closeMaterialModal() {
-  $("#materialModal")?.classList.add("hidden");
+  document.activeElement?.blur();
+  const modal = $("#materialModal");
+  const body = modal?.querySelector(".modal-body");
+  if (body) body.scrollTop = 0;
+  modal?.classList.add("hidden");
 }
 
 function openAddonModal() {
   $("#addonModal")?.classList.remove("hidden");
+  $("#addonModalTitle")?.focus();
 }
 
 function closeAddonModal() {
