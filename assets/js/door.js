@@ -6,7 +6,6 @@ import {
   DOOR_PRICE_TIERS_BY_CATEGORY,
 } from "./data/door-data.js";
 import {
-  calcPackingCost,
   calcShippingCost,
   initEmailJS,
   EMAILJS_CONFIG,
@@ -22,6 +21,9 @@ import {
   bindSizeInputHandlers,
   renderEstimateTable,
   createServiceModalController,
+  renderSelectedCard,
+  renderSelectedAddonChips,
+  updateServiceSummaryChip,
 } from "./shared.js";
 
 class BaseService {
@@ -316,10 +318,9 @@ function calcOrderSummary(items) {
   const vat = 0;
   const totalWeight = items.reduce((s, i) => s + i.weightKg, 0);
 
-  const packingCost = calcPackingCost(totalWeight);
   const shippingCost = calcShippingCost(totalWeight);
 
-  const grandTotal = subtotal + packingCost + shippingCost;
+  const grandTotal = subtotal + shippingCost;
 
   return {
     materialsTotal,
@@ -327,7 +328,6 @@ function calcOrderSummary(items) {
     subtotal,
     vat,
     totalWeight,
-    packingCost,
     shippingCost,
     grandTotal,
   };
@@ -416,19 +416,12 @@ function formatServiceSummaryText(serviceId, detail) {
 }
 
 function updateServiceSummary(serviceId) {
-  const summaryEl = document.querySelector(`[data-service-summary="${serviceId}"]`);
-  if (!summaryEl) return;
-  const srv = SERVICES[serviceId];
-  if (!srv) {
-    summaryEl.textContent = "세부 옵션을 설정해주세요.";
-    return;
-  }
-  const detail = state.serviceDetails[serviceId];
-  summaryEl.textContent = detail
-    ? formatServiceSummaryText(serviceId, detail)
-    : srv.hasDetail()
-    ? "세부 옵션을 설정해주세요."
-    : "추가 설정 없음";
+  updateServiceSummaryChip({
+    serviceId,
+    services: SERVICES,
+    serviceDetails: state.serviceDetails,
+    formatSummaryText: formatServiceSummaryText,
+  });
 }
 
 function renderServiceCards() {
@@ -632,28 +625,11 @@ function renderAddonCards() {
 }
 
 function updateSelectedAddonsDisplay() {
-  const target = $("#selectedAddonCard");
-  if (!target) return;
-  if (state.addons.length === 0) {
-    target.innerHTML = `<div class="placeholder">선택된 부자재 없음</div>`;
-    return;
-  }
-  const chips = state.addons
-    .map((id) => BOARD_ADDON_ITEMS.find((i) => i.id === id))
-    .filter(Boolean)
-    .map(
-      (item) => `
-        <div class="addon-chip">
-          <div class="material-visual" style="background:#ddd;"></div>
-          <div class="info">
-            <div class="name">${item.name}</div>
-            <div class="meta">${item.price.toLocaleString()}원</div>
-          </div>
-        </div>
-      `
-    )
-    .join("");
-  target.innerHTML = chips;
+  renderSelectedAddonChips({
+    targetId: "selectedAddonCard",
+    addons: state.addons,
+    allItems: BOARD_ADDON_ITEMS,
+  });
 }
 
 function updateAddItemState() {
@@ -968,7 +944,7 @@ function renderTable() {
         ];
       }
       const sizeText = `${item.thickness}T / ${item.width}×${item.length}mm`;
-      const servicesText = formatServiceList(item.services, item.serviceDetails);
+      const servicesText = formatServiceList(item.services, item.serviceDetails, { includeNote: true });
       return [
         `주문크기 ${escapeHtml(sizeText)} · 가공 ${escapeHtml(servicesText)}`,
         `도어비 ${formatItemMaterial(item)} · 가공비 ${item.processingCost.toLocaleString()}원`,
@@ -1012,7 +988,6 @@ function renderSummary() {
 
   const materialsTotalEl = $("#materialsTotal");
   if (materialsTotalEl) materialsTotalEl.textContent = summary.materialsTotal.toLocaleString();
-  $("#packingCost").textContent = summary.packingCost.toLocaleString();
   $("#grandTotal").textContent = summary.grandTotal.toLocaleString();
 
   const shippingEl = document.getElementById("shippingCost");
@@ -1059,7 +1034,6 @@ function buildEmailContent() {
   lines.push("");
   lines.push("[합계]");
   lines.push(`도어비: ${summary.materialsTotal.toLocaleString()}원`);
-  lines.push(`포장비: ${summary.packingCost.toLocaleString()}원`);
   lines.push(`총결제금액: ${summary.grandTotal.toLocaleString()}원`);
   lines.push(`예상무게: ${summary.totalWeight.toFixed(2)}kg`);
 
@@ -1184,7 +1158,6 @@ function renderOrderCompleteDetails() {
       <h4>합계</h4>
       <p>총결제금액: ${summary.grandTotal.toLocaleString()}원</p>
       <p>도어비: ${summary.materialsTotal.toLocaleString()}원</p>
-      <p>포장비: ${summary.packingCost.toLocaleString()}원</p>
       <p>예상무게: ${summary.totalWeight.toFixed(2)}kg</p>
     </div>
   `;
@@ -1396,38 +1369,27 @@ function renderPreviewHoles(input) {
 }
 
 function updateSelectedMaterialLabel() {
-  const cardEl = $("#selectedMaterialCard");
-  if (!cardEl) return;
-
   const fallbackSelected = document.querySelector('input[name="material"]:checked');
   const matId = selectedMaterialId || fallbackSelected?.value;
   if (matId && !selectedMaterialId) {
     selectedMaterialId = matId;
   }
   const mat = MATERIALS[matId];
-  if (!mat) {
-    cardEl.innerHTML = `
-      <div class="material-visual placeholder-visual"></div>
-      <div class="info">
-        <div class="placeholder">선택된 도어 없음</div>
-        <div class="meta">도어를 선택해주세요.</div>
-      </div>
-    `;
-    return;
-  }
-  const priceLines = formatDoorPriceTierLines(mat.category);
-
-  cardEl.innerHTML = `
-    <div class="material-visual" style="background: ${mat.swatch || "#ddd"}"></div>
-    <div class="info">
-      <div class="name">${mat.name}</div>
-      ${priceLines.map((line) => `<div class="meta">${line}</div>`).join("")}
-      <div class="meta">가능 두께: ${(mat.availableThickness || [])
-        .map((t) => `${t}T`)
-        .join(", ")}</div>
-      <div class="meta">폭 ${mat.minWidth}~${mat.maxWidth}mm / 길이 ${mat.minLength}~${mat.maxLength}mm</div>
-    </div>
-  `;
+  const priceLines = mat ? formatDoorPriceTierLines(mat.category) : [];
+  renderSelectedCard({
+    cardId: "#selectedMaterialCard",
+    emptyTitle: "선택된 도어 없음",
+    emptyMeta: "도어를 선택해주세요.",
+    swatch: mat?.swatch,
+    name: mat ? escapeHtml(mat.name) : "",
+    metaLines: mat
+      ? [
+          ...priceLines,
+          `가능 두께: ${(mat.availableThickness || []).map((t) => `${t}T`).join(", ")}`,
+          `폭 ${mat.minWidth}~${mat.maxWidth}mm / 길이 ${mat.minLength}~${mat.maxLength}mm`,
+        ]
+      : [],
+  });
 }
 
 const serviceModalController = createServiceModalController({

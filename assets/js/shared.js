@@ -4,20 +4,8 @@ export const EMAILJS_CONFIG = {
   publicKey: "dUvt2iF9ciN8bvf6r",
 };
 
-export const PACKING_SETTINGS = {
-  packingPricePerKg: 400,
-  basePackingPrice: 2000,
-};
-
 export function formatPrice(value) {
   return Number(value || 0).toLocaleString();
-}
-
-export function calcPackingCost(totalWeightKg) {
-  if (totalWeightKg === 0) return 0;
-  const { packingPricePerKg, basePackingPrice } = PACKING_SETTINGS;
-  const raw = totalWeightKg * packingPricePerKg;
-  return Math.max(Math.round(raw), basePackingPrice);
 }
 
 export function calcShippingCost(totalWeightKg) {
@@ -550,4 +538,91 @@ export function createServiceModalController({
   };
 
   return { open, close, save };
+}
+
+export function renderSelectedCard({
+  cardId,
+  emptyTitle,
+  emptyMeta,
+  swatch,
+  name,
+  metaLines = [],
+} = {}) {
+  const cardEl = cardId ? document.querySelector(cardId) : null;
+  if (!cardEl) return;
+  if (!name) {
+    cardEl.innerHTML = `
+      <div class="material-visual placeholder-visual"></div>
+      <div class="info">
+        <div class="placeholder">${emptyTitle || ""}</div>
+        <div class="meta">${emptyMeta || ""}</div>
+      </div>
+    `;
+    return;
+  }
+  cardEl.innerHTML = `
+    <div class="material-visual" style="background: ${swatch || "#ddd"}"></div>
+    <div class="info">
+      <div class="name">${name}</div>
+      ${metaLines.map((line) => `<div class="meta">${line}</div>`).join("")}
+    </div>
+  `;
+}
+
+export function renderSelectedAddonChips({
+  targetId,
+  emptyText = "선택된 부자재 없음",
+  addons = [],
+  allItems = [],
+  formatPrice,
+  swatch = "#ddd",
+} = {}) {
+  const target = targetId ? document.getElementById(targetId) : null;
+  if (!target) return;
+  if (!addons.length) {
+    target.innerHTML = `<div class="placeholder">${emptyText}</div>`;
+    return;
+  }
+  const chips = addons
+    .map((id) => allItems.find((i) => i.id === id))
+    .filter(Boolean)
+    .map(
+      (item) => `
+        <div class="addon-chip">
+          <div class="material-visual" style="background:${swatch};"></div>
+          <div class="info">
+            <div class="name">${item.name}</div>
+            <div class="meta">${formatPrice ? formatPrice(item.price) : item.price.toLocaleString()}원</div>
+          </div>
+        </div>
+      `
+    )
+    .join("");
+  target.innerHTML = chips;
+}
+
+export function updateServiceSummaryChip({
+  serviceId,
+  services,
+  serviceDetails,
+  formatSummaryText,
+  emptyDetailText = "세부 옵션을 설정해주세요.",
+  noDetailText = "추가 설정 없음",
+  selector,
+} = {}) {
+  const summaryEl = document.querySelector(
+    selector || `[data-service-summary="${serviceId}"]`
+  );
+  if (!summaryEl) return;
+  const srv = services?.[serviceId];
+  if (!srv) {
+    summaryEl.textContent = emptyDetailText;
+    return;
+  }
+  const detail = serviceDetails?.[serviceId];
+  summaryEl.textContent = detail
+    ? formatSummaryText?.(serviceId, detail) || emptyDetailText
+    : srv.hasDetail()
+    ? emptyDetailText
+    : noDetailText;
 }

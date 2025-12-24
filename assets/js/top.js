@@ -11,6 +11,9 @@ import {
   updateSizeErrors,
   renderEstimateTable,
   createServiceModalController,
+  renderSelectedCard,
+  renderSelectedAddonChips,
+  updateServiceSummaryChip,
 } from "./shared.js";
 import { TOP_PROCESSING_SERVICES, TOP_TYPES, TOP_OPTIONS, TOP_ADDON_ITEMS } from "./data/top-data.js";
 
@@ -343,26 +346,15 @@ function calcAddonDetail(price) {
 }
 
 function updateSelectedTopTypeCard() {
-  const card = $("#selectedTopTypeCard");
-  if (!card) return;
   const type = TOP_TYPES.find((t) => t.id === selectedTopType);
-  if (!type) {
-    card.innerHTML = `
-      <div class="material-visual placeholder-visual"></div>
-      <div class="info">
-        <div class="placeholder">선택된 상판 없음</div>
-        <div class="meta">상판을 선택해주세요.</div>
-      </div>
-    `;
-    return;
-  }
-  card.innerHTML = `
-    <div class="material-visual" style="background: ${type.swatch || "#ddd"}"></div>
-    <div class="info">
-      <div class="name">${type.name}</div>
-      <div class="meta">기본가 ${formatPrice(type.basePrice)}원</div>
-    </div>
-  `;
+  renderSelectedCard({
+    cardId: "#selectedTopTypeCard",
+    emptyTitle: "선택된 상판 없음",
+    emptyMeta: "상판을 선택해주세요.",
+    swatch: type?.swatch,
+    name: type ? escapeHtml(type.name) : "",
+    metaLines: type ? [`기본가 ${formatPrice(type.basePrice)}원`] : [],
+  });
 }
 
 function updateTopThicknessOptions(typeId) {
@@ -538,44 +530,21 @@ function renderTopAddonCards() {
 }
 
 function updateSelectedTopAddonsDisplay() {
-  const target = $("#selectedTopAddonCard");
-  if (!target) return;
-  if (state.addons.length === 0) {
-    target.innerHTML = `<div class="placeholder">선택된 부자재 없음</div>`;
-    return;
-  }
-  const chips = state.addons
-    .map((id) => TOP_ADDON_ITEMS.find((i) => i.id === id))
-    .filter(Boolean)
-    .map(
-      (item) => `
-        <div class="addon-chip">
-          <div class="material-visual" style="background:#ddd;"></div>
-          <div class="info">
-            <div class="name">${item.name}</div>
-            <div class="meta">${formatPrice(item.price)}원</div>
-          </div>
-        </div>
-      `
-    )
-    .join("");
-  target.innerHTML = chips;
+  renderSelectedAddonChips({
+    targetId: "selectedTopAddonCard",
+    addons: state.addons,
+    allItems: TOP_ADDON_ITEMS,
+    formatPrice,
+  });
 }
 
 function updateServiceSummary(serviceId) {
-  const summaryEl = document.querySelector(`[data-service-summary="${serviceId}"]`);
-  if (!summaryEl) return;
-  const srv = SERVICES[serviceId];
-  if (!srv) {
-    summaryEl.textContent = "세부 옵션을 설정해주세요.";
-    return;
-  }
-  const detail = state.serviceDetails[serviceId];
-  summaryEl.textContent = detail
-    ? formatServiceSummaryText(serviceId, detail)
-    : srv.hasDetail()
-    ? "세부 옵션을 설정해주세요."
-    : "추가 설정 없음";
+  updateServiceSummaryChip({
+    serviceId,
+    services: SERVICES,
+    serviceDetails: state.serviceDetails,
+    formatSummaryText: formatServiceSummaryText,
+  });
 }
 
 function renderServiceCards() {
@@ -674,8 +643,9 @@ function renderTable() {
         ];
       }
       const baseCost = Math.max(0, item.materialCost - item.processingCost);
+      const servicesText = formatServiceList(item.services, item.serviceDetails, { includeNote: true });
       return [
-        `사이즈 ${escapeHtml(item.displaySize)} · 옵션 ${escapeHtml(item.optionsLabel)} · 가공 ${escapeHtml(item.servicesLabel || "-")}`,
+        `사이즈 ${escapeHtml(item.displaySize)} · 옵션 ${escapeHtml(item.optionsLabel)} · 가공 ${escapeHtml(servicesText || "-")}`,
         `상판비 ${baseCost.toLocaleString()}원 · 가공비 ${item.processingCost.toLocaleString()}원`,
       ];
     },
@@ -692,11 +662,6 @@ function renderTable() {
 function renderSummary() {
   const materialsTotal = state.items.reduce((sum, it) => sum + it.subtotal, 0);
   const grandTotal = state.items.reduce((sum, it) => sum + it.total, 0);
-  // 상판 무게 데이터가 없으므로 포장비는 0으로 표시
-  const packingCost = 0;
-  const packingEl = $("#packingCost");
-  if (packingEl) packingEl.textContent = packingCost.toLocaleString();
-
   const grandEl = $("#grandTotal");
   if (grandEl) grandEl.textContent = grandTotal.toLocaleString();
   const naverUnits = Math.ceil(grandTotal / 1000) || 0;
@@ -716,14 +681,14 @@ function renderOrderCompleteDetails() {
     state.items.length === 0
       ? '<p class="item-line">담긴 항목이 없습니다.</p>'
       : state.items
-          .map(
-            (item, idx) =>
-              `<p class="item-line">${idx + 1}. ${item.type === "addon" ? "부자재" : "상판"} ${escapeHtml(item.typeName)} x${item.quantity}${
-                item.type === "addon"
-                  ? ""
-                  : ` · 크기 ${escapeHtml(item.displaySize)} · 옵션 ${escapeHtml(item.optionsLabel)} · 가공 ${escapeHtml(item.servicesLabel || "-")}`
-              } · 금액 ${item.total.toLocaleString()}원</p>`
-          )
+          .map((item, idx) => {
+            const servicesText = formatServiceList(item.services, item.serviceDetails, { includeNote: true });
+            return `<p class="item-line">${idx + 1}. ${item.type === "addon" ? "부자재" : "상판"} ${escapeHtml(item.typeName)} x${item.quantity}${
+              item.type === "addon"
+                ? ""
+                : ` · 크기 ${escapeHtml(item.displaySize)} · 옵션 ${escapeHtml(item.optionsLabel)} · 가공 ${escapeHtml(servicesText || "-")}`
+            } · 금액 ${item.total.toLocaleString()}원</p>`;
+          })
           .join("");
 
   container.innerHTML = `
