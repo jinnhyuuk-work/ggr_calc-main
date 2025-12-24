@@ -1,6 +1,7 @@
 import {
   DOOR_MATERIALS as MATERIALS,
   DOOR_PROCESSING_SERVICES as BOARD_PROCESSING_SERVICES,
+  DOOR_OPTIONS,
   DOOR_ADDON_ITEMS as BOARD_ADDON_ITEMS,
   DOOR_MATERIAL_CATEGORIES_DESC as MATERIAL_CATEGORIES_DESC,
   DOOR_PRICE_TIERS_BY_CATEGORY,
@@ -24,6 +25,7 @@ import {
   renderSelectedCard,
   renderSelectedAddonChips,
   updateServiceSummaryChip,
+  buildEstimateDetailLines,
 } from "./shared.js";
 
 class BaseService {
@@ -246,6 +248,7 @@ function calcItemDetail(input) {
     length,
     thickness,
     quantity,
+    options = [],
     services = [],
     serviceDetails = {},
   } = input;
@@ -269,6 +272,7 @@ function calcItemDetail(input) {
     services,
     serviceDetails,
   });
+  const optionPrice = calcOptionsPrice(options);
 
   const { weightKg } = calcWeightKg({
     materialId,
@@ -278,19 +282,23 @@ function calcItemDetail(input) {
     quantity,
   });
 
-  const subtotal = materialCost + processingCost;
+  const appliedMaterialCost = isCustom ? 0 : materialCost;
+  const appliedProcessingCost = isCustom ? 0 : processingCost + optionPrice;
+  const subtotal = appliedMaterialCost + appliedProcessingCost;
   const vat = 0;
   const total = Math.round(subtotal);
 
   return {
     areaM2,
-    materialCost,
-    processingCost,
+    materialCost: appliedMaterialCost,
+    processingCost: appliedProcessingCost,
     subtotal,
     vat,
     total,
     weightKg,
     isCustomPrice: isCustom,
+    optionsLabel: formatOptionsLabel(options),
+    options,
   };
 }
 
@@ -407,6 +415,21 @@ function formatServiceList(services, serviceDetails = {}, opts = {}) {
     .join(", ");
 }
 
+function formatOptionsLabel(options = []) {
+  if (!options || options.length === 0) return "-";
+  return options
+    .map((id) => DOOR_OPTIONS.find((o) => o.id === id)?.name || id)
+    .join(", ");
+}
+
+function calcOptionsPrice(options = []) {
+  if (!options || options.length === 0) return 0;
+  return options.reduce((sum, id) => {
+    const opt = DOOR_OPTIONS.find((o) => o.id === id);
+    return sum + (opt?.price || 0);
+  }, 0);
+}
+
 function formatServiceSummaryText(serviceId, detail) {
   const srv = SERVICES[serviceId];
   if (!srv) return "세부 옵션을 설정해주세요.";
@@ -498,6 +521,35 @@ function renderServiceCards() {
       }
       openServiceModal(serviceId, checkbox, wasChecked ? "edit" : "change");
     }
+  });
+}
+
+function renderOptionCards() {
+  const container = $("#doorOptionCards");
+  if (!container) return;
+  container.innerHTML = "";
+  DOOR_OPTIONS.forEach((opt) => {
+    const label = document.createElement("label");
+    label.className = "card-base option-card";
+    label.innerHTML = `
+      <input type="checkbox" name="doorOption" value="${opt.id}" />
+      <div class="material-visual" style="background: #eee"></div>
+      <div class="name">${opt.name}</div>
+      <div class="price">${opt.price.toLocaleString()}원</div>
+      ${descriptionHTML(opt.description)}
+    `;
+    container.appendChild(label);
+  });
+  container.addEventListener("change", (e) => {
+    if (e.target.name !== "doorOption") return;
+    const card = e.target.closest(".option-card");
+    if (e.target.checked) {
+      card?.classList.add("selected");
+    } else {
+      card?.classList.remove("selected");
+    }
+    autoCalculatePrice();
+    updateAddItemState();
   });
 }
 
@@ -646,6 +698,9 @@ function readCurrentInputs() {
   const thickness = Number($("#thicknessSelect").value);
   const width = Number($("#widthInput").value);
   const length = Number($("#lengthInput").value);
+  const options = Array.from(
+    document.querySelectorAll("#doorOptionCards input:checked")
+  ).map((el) => el.value);
 
   const services = Array.from(document.querySelectorAll('input[name="service"]:checked')).map(
     (el) => el.value
@@ -653,7 +708,7 @@ function readCurrentInputs() {
 
   const serviceDetails = cloneServiceDetails(state.serviceDetails);
 
-  return { materialId, thickness, width, length, services, serviceDetails };
+  return { materialId, thickness, width, length, options, services, serviceDetails };
 }
 
 // 입력값 검증
@@ -793,6 +848,12 @@ function resetStepsAfterAdd() {
   if (widthEl) widthEl.value = "";
   if (lengthEl) lengthEl.value = "";
 
+  // 옵션 초기화
+  document.querySelectorAll('input[name="doorOption"]').forEach((input) => {
+    input.checked = false;
+    input.closest(".option-card")?.classList.remove("selected");
+  });
+
   // 가공 서비스 초기화
   document.querySelectorAll('input[name="service"]').forEach((input) => {
     input.checked = false;
@@ -826,6 +887,7 @@ function updateStepVisibility(scrollTarget) {
   }
   const step1 = document.getElementById("step1");
   const step2 = document.getElementById("step2");
+  const step3Options = document.getElementById("step3Options");
   const step3 = document.getElementById("step3");
   const actionCard = document.querySelector(".action-card");
   const step4 = document.getElementById("step4");
@@ -852,7 +914,7 @@ function updateStepVisibility(scrollTarget) {
     return;
   }
 
-  [step1, step2, step3, actionCard].forEach((el) => {
+  [step1, step2, step3Options, step3, actionCard].forEach((el) => {
     if (el) el.classList.toggle("hidden-step", !showPhase1);
   });
   if (step4) step4.classList.toggle("hidden-step", !showPhase2);
@@ -945,10 +1007,18 @@ function renderTable() {
       }
       const sizeText = `${item.thickness}T / ${item.width}×${item.length}mm`;
       const servicesText = formatServiceList(item.services, item.serviceDetails, { includeNote: true });
-      return [
-        `주문크기 ${escapeHtml(sizeText)} · 가공 ${escapeHtml(servicesText)}`,
-        `도어비 ${formatItemMaterial(item)} · 가공비 ${item.processingCost.toLocaleString()}원`,
-      ];
+      const baseLines = buildEstimateDetailLines({
+        sizeText: escapeHtml(sizeText),
+        optionsText: escapeHtml(item.optionsLabel || "-"),
+        servicesText: escapeHtml(servicesText),
+        materialLabel: "도어비",
+        materialCost: item.isCustomPrice ? null : item.materialCost,
+        processingCost: item.processingCost,
+      });
+      if (item.isCustomPrice) {
+        baseLines.splice(3, 0, "도어비 상담 안내");
+      }
+      return baseLines;
     },
     onQuantityChange: (id, value) => updateItemQuantity(id, value),
     onDelete: (id) => {
@@ -975,6 +1045,7 @@ function updateItemQuantity(id, quantity) {
       length: item.length,
       thickness: item.thickness,
       quantity,
+      options: item.options,
       services: item.services,
       serviceDetails: item.serviceDetails,
     });
@@ -1024,9 +1095,10 @@ function buildEmailContent() {
       const servicesText = isAddon
         ? "-"
         : formatServiceList(item.services, item.serviceDetails, { includeNote: true });
+      const optionsText = isAddon ? "-" : item.optionsLabel || "-";
       const amountText = item.isCustomPrice ? "상담 안내" : `${item.total.toLocaleString()}원`;
       lines.push(
-        `${idx + 1}. ${materialName} x${item.quantity} | 크기 ${sizeText} | 가공 ${servicesText} | 금액 ${amountText}`
+        `${idx + 1}. ${materialName} x${item.quantity} | 크기 ${sizeText} | 옵션 ${optionsText} | 가공 ${servicesText} | 금액 ${amountText}`
       );
     });
   }
@@ -1137,8 +1209,9 @@ function renderOrderCompleteDetails() {
             const servicesText = isAddon
               ? "-"
               : formatServiceList(item.services, item.serviceDetails, { includeNote: true });
+            const optionsText = isAddon ? "-" : item.optionsLabel || "-";
             const amountText = item.isCustomPrice ? "상담 안내" : `${item.total.toLocaleString()}원`;
-            return `<p class="item-line">${idx + 1}. ${escapeHtml(materialName)} x${item.quantity} · 크기 ${escapeHtml(sizeText)} · 가공 ${escapeHtml(servicesText)} · 금액 ${amountText}</p>`;
+            return `<p class="item-line">${idx + 1}. ${escapeHtml(materialName)} x${item.quantity} · 크기 ${escapeHtml(sizeText)} · 옵션 ${escapeHtml(optionsText)} · 가공 ${escapeHtml(servicesText)} · 금액 ${amountText}</p>`;
           })
           .join("");
 
@@ -1265,12 +1338,12 @@ function autoCalculatePrice() {
     return;
   }
   if (detail.isCustomPrice) {
-    $("#itemPriceDisplay").textContent = "비규격 상담 안내";
+    $("#itemPriceDisplay").textContent = "금액: 상담 안내";
     updateAddItemState();
     return;
   }
   $("#itemPriceDisplay").textContent =
-    `금액(부가세 포함): ${detail.total.toLocaleString()}원 ` +
+    `금액: ${detail.total.toLocaleString()}원 ` +
     `(도어비 ${detail.materialCost.toLocaleString()} + 가공비 ${detail.processingCost.toLocaleString()})`;
   updateAddItemState();
 }
@@ -1491,6 +1564,7 @@ function init() {
 
   renderMaterialTabs();
   renderMaterialCards();
+  renderOptionCards();
   renderServiceCards();
   renderAddonCards();
   renderTable();

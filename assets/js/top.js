@@ -14,6 +14,7 @@ import {
   renderSelectedCard,
   renderSelectedAddonChips,
   updateServiceSummaryChip,
+  buildEstimateDetailLines,
 } from "./shared.js";
 import { TOP_PROCESSING_SERVICES, TOP_TYPES, TOP_OPTIONS, TOP_ADDON_ITEMS } from "./data/top-data.js";
 
@@ -210,6 +211,8 @@ const state = { items: [], serviceDetails: {}, addons: [] };
 let sendingEmail = false;
 let orderCompleted = false;
 const DEFAULT_TOP_THICKNESSES = [12, 24, 30, 40, 50];
+const TOP_CUSTOM_WIDTH_MAX = 800;
+const TOP_CUSTOM_LENGTH_MAX = 3000;
 const TOP_CATEGORY_DESC = {
   인조대리석: "가성비 좋은 기본 상판 소재입니다.",
   하이막스: "내구성과 균일한 표면감이 장점인 프리미엄 상판입니다.",
@@ -272,14 +275,19 @@ function validateTopInputs({ typeId, shape, width, length, length2, thickness })
   if (!thickness) return "두께를 입력해주세요.";
   const type = TOP_TYPES.find((t) => t.id === typeId);
   if (type?.minWidth && width < type.minWidth) return `폭은 최소 ${type.minWidth}mm 입니다.`;
-  if (type?.maxWidth && width > type.maxWidth) return `폭은 최대 ${type.maxWidth}mm 입니다.`;
   if (type?.minLength && length < type.minLength) return `길이는 최소 ${type.minLength}mm 입니다.`;
-  if (type?.maxLength && length > type.maxLength) return `길이는 최대 ${type.maxLength}mm 입니다.`;
   if (needsSecond) {
     if (type?.minLength && length2 < type.minLength) return `길이2는 최소 ${type.minLength}mm 입니다.`;
-    if (type?.maxLength && length2 > type.maxLength) return `길이2는 최대 ${type.maxLength}mm 입니다.`;
   }
   return null;
+}
+
+function isTopCustomSize({ width, length, length2 = 0, shape }) {
+  if (width > TOP_CUSTOM_WIDTH_MAX) return true;
+  if (length > TOP_CUSTOM_LENGTH_MAX) return true;
+  const needsSecond = shape === "l" || shape === "rl";
+  if (needsSecond && length2 > TOP_CUSTOM_LENGTH_MAX) return true;
+  return false;
 }
 
 function calcTopDetail(input) {
@@ -287,6 +295,8 @@ function calcTopDetail(input) {
   const type = TOP_TYPES.find((t) => t.id === typeId);
   const err = validateTopInputs(input);
   if (!type || err) return { error: err || "필수 정보를 입력해주세요." };
+
+  const isCustomPrice = isTopCustomSize({ width, length, length2, shape });
 
   const needsSecond = shape === "l" || shape === "rl";
   const areaM2 =
@@ -305,7 +315,8 @@ function calcTopDetail(input) {
   });
   const shapeFee = needsSecond ? 30000 : 0;
   const processingCost = optionPrice + shapeFee + serviceProcessingCost;
-  const materialCost = base + processingCost;
+  const materialCost = isCustomPrice ? 0 : base + processingCost;
+  const appliedProcessingCost = isCustomPrice ? 0 : processingCost;
   const subtotal = materialCost;
   const vat = 0;
   const total = Math.round(subtotal);
@@ -329,6 +340,8 @@ function calcTopDetail(input) {
     servicesLabel: formatServiceList(services, serviceDetails, { includeNote: true }),
     serviceDetails,
     services,
+    isCustomPrice,
+    processingCost: appliedProcessingCost,
   };
 }
 
@@ -632,7 +645,7 @@ function renderTable() {
       const addonInfo = isAddon ? TOP_ADDON_ITEMS.find((a) => a.id === item.addonId) : null;
       return escapeHtml(isAddon ? addonInfo?.name || "부자재" : item.typeName);
     },
-    getTotalText: (item) => `${item.total.toLocaleString()}원`,
+    getTotalText: (item) => (item.isCustomPrice ? "상담 안내" : `${item.total.toLocaleString()}원`),
     getDetailLines: (item) => {
       const isAddon = item.type === "addon";
       const addonInfo = isAddon ? TOP_ADDON_ITEMS.find((a) => a.id === item.addonId) : null;
@@ -644,10 +657,18 @@ function renderTable() {
       }
       const baseCost = Math.max(0, item.materialCost - item.processingCost);
       const servicesText = formatServiceList(item.services, item.serviceDetails, { includeNote: true });
-      return [
-        `사이즈 ${escapeHtml(item.displaySize)} · 옵션 ${escapeHtml(item.optionsLabel)} · 가공 ${escapeHtml(servicesText || "-")}`,
-        `상판비 ${baseCost.toLocaleString()}원 · 가공비 ${item.processingCost.toLocaleString()}원`,
-      ];
+      const baseLines = buildEstimateDetailLines({
+        sizeText: escapeHtml(item.displaySize),
+        optionsText: escapeHtml(item.optionsLabel),
+        servicesText: escapeHtml(servicesText || "-"),
+        materialLabel: "상판비",
+        materialCost: item.isCustomPrice ? null : baseCost,
+        processingCost: item.processingCost,
+      });
+      if (item.isCustomPrice) {
+        baseLines.splice(3, 0, "상판비 상담 안내");
+      }
+      return baseLines;
     },
     onQuantityChange: (id, value) => updateItemQuantity(id, value),
     onDelete: (id) => {
@@ -683,11 +704,12 @@ function renderOrderCompleteDetails() {
       : state.items
           .map((item, idx) => {
             const servicesText = formatServiceList(item.services, item.serviceDetails, { includeNote: true });
+            const amountText = item.isCustomPrice ? "상담 안내" : `${item.total.toLocaleString()}원`;
             return `<p class="item-line">${idx + 1}. ${item.type === "addon" ? "부자재" : "상판"} ${escapeHtml(item.typeName)} x${item.quantity}${
               item.type === "addon"
                 ? ""
                 : ` · 크기 ${escapeHtml(item.displaySize)} · 옵션 ${escapeHtml(item.optionsLabel)} · 가공 ${escapeHtml(servicesText || "-")}`
-            } · 금액 ${item.total.toLocaleString()}원</p>`;
+            } · 금액 ${amountText}</p>`;
           })
           .join("");
 
@@ -731,11 +753,11 @@ function refreshTopEstimate() {
     lengthErrorId: "topLengthError",
     length2ErrorId: "topLength2Error",
     widthMin: type?.minWidth,
-    widthMax: type?.maxWidth,
+    widthMax: null,
     lengthMin: type?.minLength,
-    lengthMax: type?.maxLength,
+    lengthMax: null,
     length2Min: type?.minLength,
-    length2Max: type?.maxLength,
+    length2Max: null,
     enableLength2: needsSecond,
   });
   const detail = calcTopDetail(input);
@@ -745,8 +767,14 @@ function refreshTopEstimate() {
     updateTopPreview(input, null);
     return;
   }
+  if (detail.isCustomPrice) {
+    priceEl.textContent = "금액: 상담 안내";
+    updateAddButtonState();
+    updateTopPreview(input, detail);
+    return;
+  }
   const baseCost = Math.max(0, detail.materialCost - detail.processingCost);
-  priceEl.textContent = `금액(부가세 포함): ${formatPrice(detail.total)}원 (상판비 ${formatPrice(
+  priceEl.textContent = `금액: ${formatPrice(detail.total)}원 (상판비 ${formatPrice(
     baseCost
   )} + 가공비 ${formatPrice(detail.processingCost)})`;
   updateAddButtonState();
@@ -1179,10 +1207,12 @@ function buildEmailContent() {
     lines.push("담긴 항목 없음");
   } else {
     state.items.forEach((item, idx) => {
+      const servicesText = formatServiceList(item.services, item.serviceDetails, { includeNote: true });
+      const amountText = item.isCustomPrice ? "상담 안내" : `${item.total.toLocaleString()}원`;
       lines.push(
         `${idx + 1}. ${item.typeName} x${item.quantity} | 크기 ${
           item.displaySize
-        } | 옵션 ${item.optionsLabel} | 가공 ${item.servicesLabel || "-"} | 금액 ${item.total.toLocaleString()}원`
+        } | 옵션 ${item.optionsLabel} | 가공 ${servicesText || "-"} | 금액 ${amountText}`
       );
     });
   }

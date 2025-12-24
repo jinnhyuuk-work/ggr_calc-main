@@ -1172,4 +1172,25 @@ export const BOARD_PROCESSING_SERVICES = {
   ...COMMON_PROCESSING_SERVICES,
 };
 
+export const BOARD_OPTIONS = [
+  {
+    id: "edge_finish",
+    name: "엣지 마감",
+    price: 5000,
+    description: "절단면에 엣지 마감을 추가합니다.",
+  },
+  {
+    id: "surface_coating",
+    name: "표면 코팅",
+    price: 7000,
+    description: "표면 보호를 위한 코팅 옵션입니다.",
+  },
+  {
+    id: "anti_scratch",
+    name: "스크래치 보호",
+    price: 4000,
+    description: "스크래치 보호 필름을 추가합니다.",
+  },
+];
+
 export const BOARD_ADDON_ITEMS = [...COMMON_ADDON_ITEMS];

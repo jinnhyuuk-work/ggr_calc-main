@@ -1283,6 +1283,12 @@ th, td {
   gap: 4px;
 }
 
+.detail-row .detail-line {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
 .error-msg {
   color: var(--color-text-meta);
   font-size: 12px;

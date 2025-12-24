@@ -175,36 +175,60 @@ export function updateSizeErrors({
   let lengthValid = true;
   let length2Valid = true;
 
-  if (widthEl?.value && Number.isFinite(widthMin) && Number.isFinite(widthMax)) {
+  if (widthEl?.value) {
     const widthVal = Number(widthEl.value);
-    if (widthVal < widthMin || widthVal > widthMax) {
+    const minOk = !Number.isFinite(widthMin) || widthVal >= widthMin;
+    const maxOk = !Number.isFinite(widthMax) || widthVal <= widthMax;
+    if (!minOk || !maxOk) {
       widthValid = false;
       if (widthErrEl) {
-        widthErrEl.textContent = `폭: ${widthMin}~${widthMax}mm 범위로 입력해주세요.`;
+        if (Number.isFinite(widthMin) && Number.isFinite(widthMax)) {
+          widthErrEl.textContent = `폭: ${widthMin}~${widthMax}mm 범위로 입력해주세요.`;
+        } else if (Number.isFinite(widthMin)) {
+          widthErrEl.textContent = `폭: ${widthMin}mm 이상 입력해주세요.`;
+        } else if (Number.isFinite(widthMax)) {
+          widthErrEl.textContent = `폭: ${widthMax}mm 이하로 입력해주세요.`;
+        }
         widthErrEl.classList.add("error");
       }
       widthEl.classList.add("input-error");
     }
   }
 
-  if (lengthEl?.value && Number.isFinite(lengthMin) && Number.isFinite(lengthMax)) {
+  if (lengthEl?.value) {
     const lengthVal = Number(lengthEl.value);
-    if (lengthVal < lengthMin || lengthVal > lengthMax) {
+    const minOk = !Number.isFinite(lengthMin) || lengthVal >= lengthMin;
+    const maxOk = !Number.isFinite(lengthMax) || lengthVal <= lengthMax;
+    if (!minOk || !maxOk) {
       lengthValid = false;
       if (lengthErrEl) {
-        lengthErrEl.textContent = `길이: ${lengthMin}~${lengthMax}mm 범위로 입력해주세요.`;
+        if (Number.isFinite(lengthMin) && Number.isFinite(lengthMax)) {
+          lengthErrEl.textContent = `길이: ${lengthMin}~${lengthMax}mm 범위로 입력해주세요.`;
+        } else if (Number.isFinite(lengthMin)) {
+          lengthErrEl.textContent = `길이: ${lengthMin}mm 이상 입력해주세요.`;
+        } else if (Number.isFinite(lengthMax)) {
+          lengthErrEl.textContent = `길이: ${lengthMax}mm 이하로 입력해주세요.`;
+        }
         lengthErrEl.classList.add("error");
       }
       lengthEl.classList.add("input-error");
     }
   }
 
-  if (enableLength2 && length2El?.value && Number.isFinite(length2Min) && Number.isFinite(length2Max)) {
+  if (enableLength2 && length2El?.value) {
     const length2Val = Number(length2El.value);
-    if (length2Val < length2Min || length2Val > length2Max) {
+    const minOk = !Number.isFinite(length2Min) || length2Val >= length2Min;
+    const maxOk = !Number.isFinite(length2Max) || length2Val <= length2Max;
+    if (!minOk || !maxOk) {
       length2Valid = false;
       if (length2ErrEl) {
-        length2ErrEl.textContent = `길이2: ${length2Min}~${length2Max}mm 범위로 입력해주세요.`;
+        if (Number.isFinite(length2Min) && Number.isFinite(length2Max)) {
+          length2ErrEl.textContent = `길이2: ${length2Min}~${length2Max}mm 범위로 입력해주세요.`;
+        } else if (Number.isFinite(length2Min)) {
+          length2ErrEl.textContent = `길이2: ${length2Min}mm 이상 입력해주세요.`;
+        } else if (Number.isFinite(length2Max)) {
+          length2ErrEl.textContent = `길이2: ${length2Max}mm 이하로 입력해주세요.`;
+        }
         length2ErrEl.classList.add("error");
       }
       length2El.classList.add("input-error");
@@ -625,4 +649,25 @@ export function updateServiceSummaryChip({
     : srv.hasDetail()
     ? emptyDetailText
     : noDetailText;
+}
+
+export function buildEstimateDetailLines({
+  sizeText,
+  optionsText,
+  servicesText,
+  materialLabel,
+  materialCost,
+  processingCost,
+} = {}) {
+  const lines = [];
+  if (sizeText) lines.push(`사이즈 ${sizeText}`);
+  if (optionsText) lines.push(`옵션 ${optionsText}`);
+  if (servicesText) lines.push(`가공 ${servicesText}`);
+  if (materialLabel && Number.isFinite(materialCost)) {
+    lines.push(`${materialLabel} ${materialCost.toLocaleString()}원`);
+  }
+  if (Number.isFinite(processingCost)) {
+    lines.push(`가공비 ${processingCost.toLocaleString()}원`);
+  }
+  return lines;
 }

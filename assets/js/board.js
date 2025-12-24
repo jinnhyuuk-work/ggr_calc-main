@@ -1,6 +1,7 @@
 import {
   MATERIALS,
   BOARD_PROCESSING_SERVICES,
+  BOARD_OPTIONS,
   BOARD_ADDON_ITEMS,
   MATERIAL_CATEGORIES_DESC,
 } from "./data/board-data.js";
@@ -22,6 +23,7 @@ import {
   renderSelectedCard,
   renderSelectedAddonChips,
   updateServiceSummaryChip,
+  buildEstimateDetailLines,
 } from "./shared.js";
 
 class BaseService {
@@ -181,14 +183,20 @@ function getPricePerM2(material, thickness) {
   return material.pricePerM2;
 }
 
+function isBoardCustomSize(width, length) {
+  return width > BOARD_CUSTOM_WIDTH_MAX || length > BOARD_CUSTOM_LENGTH_MAX;
+}
+
 // 1) 합판 금액 계산
 function calcMaterialCost({ materialId, width, length, quantity, thickness }) {
   const material = MATERIALS[materialId];
   const areaM2 = (width / 1000) * (length / 1000); // mm → m
   const pricePerM2 = getPricePerM2(material, thickness);
-
+  if (isBoardCustomSize(width, length)) {
+    return { areaM2, materialCost: 0, isCustom: true };
+  }
   const materialCost = areaM2 * pricePerM2 * quantity;
-  return { areaM2, materialCost };
+  return { areaM2, materialCost, isCustom: false };
 }
 
 function getPreviewDimensions(width, length, maxPx = 160, minPx = 40) {
@@ -246,11 +254,12 @@ function calcItemDetail(input) {
     length,
     thickness,
     quantity,
+    options = [],
     services = [],
     serviceDetails = {},
   } = input;
 
-  const { areaM2, materialCost } = calcMaterialCost({
+  const { areaM2, materialCost, isCustom } = calcMaterialCost({
     materialId,
     width,
     length,
@@ -266,6 +275,7 @@ function calcItemDetail(input) {
     services,
     serviceDetails,
   });
+  const optionPrice = calcOptionsPrice(options);
 
   const { weightKg } = calcWeightKg({
     materialId,
@@ -275,18 +285,23 @@ function calcItemDetail(input) {
     quantity,
   });
 
-  const subtotal = materialCost + processingCost;
+  const appliedMaterialCost = isCustom ? 0 : materialCost;
+  const appliedProcessingCost = isCustom ? 0 : processingCost + optionPrice;
+  const subtotal = appliedMaterialCost + appliedProcessingCost;
   const vat = 0;
   const total = Math.round(subtotal);
 
   return {
     areaM2,
-    materialCost,
-    processingCost,
+    materialCost: appliedMaterialCost,
+    processingCost: appliedProcessingCost,
     subtotal,
     vat,
     total,
     weightKg,
+    isCustomPrice: isCustom,
+    optionsLabel: formatOptionsLabel(options),
+    options,
   };
 }
 
@@ -336,6 +351,8 @@ const WIDTH_MIN = 100;
 const WIDTH_MAX = 800;
 const LENGTH_MIN = 200;
 const LENGTH_MAX = 2400;
+const BOARD_CUSTOM_WIDTH_MAX = 1200;
+const BOARD_CUSTOM_LENGTH_MAX = 2400;
 
 const state = {
   items: [], // {id, materialId, thickness, width, length, quantity, services, ...계산 결과}
@@ -401,6 +418,21 @@ function formatServiceList(services, serviceDetails = {}, opts = {}) {
     .map((id) => formatServiceDetail(id, serviceDetails[id], opts))
     .filter(Boolean)
     .join(", ");
+}
+
+function formatOptionsLabel(options = []) {
+  if (!options || options.length === 0) return "-";
+  return options
+    .map((id) => BOARD_OPTIONS.find((o) => o.id === id)?.name || id)
+    .join(", ");
+}
+
+function calcOptionsPrice(options = []) {
+  if (!options || options.length === 0) return 0;
+  return options.reduce((sum, id) => {
+    const opt = BOARD_OPTIONS.find((o) => o.id === id);
+    return sum + (opt?.price || 0);
+  }, 0);
 }
 
 function formatServiceSummaryText(serviceId, detail) {
@@ -494,6 +526,35 @@ function renderServiceCards() {
       }
       openServiceModal(serviceId, checkbox, wasChecked ? "edit" : "change");
     }
+  });
+}
+
+function renderOptionCards() {
+  const container = $("#boardOptionCards");
+  if (!container) return;
+  container.innerHTML = "";
+  BOARD_OPTIONS.forEach((opt) => {
+    const label = document.createElement("label");
+    label.className = "card-base option-card";
+    label.innerHTML = `
+      <input type="checkbox" name="boardOption" value="${opt.id}" />
+      <div class="material-visual" style="background: #eee"></div>
+      <div class="name">${opt.name}</div>
+      <div class="price">${opt.price.toLocaleString()}원</div>
+      ${descriptionHTML(opt.description)}
+    `;
+    container.appendChild(label);
+  });
+  container.addEventListener("change", (e) => {
+    if (e.target.name !== "boardOption") return;
+    const card = e.target.closest(".option-card");
+    if (e.target.checked) {
+      card?.classList.add("selected");
+    } else {
+      card?.classList.remove("selected");
+    }
+    autoCalculatePrice();
+    updateAddItemState();
   });
 }
 
@@ -641,6 +702,9 @@ function readCurrentInputs() {
   const thickness = Number($("#thicknessSelect").value);
   const width = Number($("#widthInput").value);
   const length = Number($("#lengthInput").value);
+  const options = Array.from(
+    document.querySelectorAll("#boardOptionCards input:checked")
+  ).map((el) => el.value);
 
   const services = Array.from(document.querySelectorAll('input[name="service"]:checked')).map(
     (el) => el.value
@@ -648,7 +712,7 @@ function readCurrentInputs() {
 
   const serviceDetails = cloneServiceDetails(state.serviceDetails);
 
-  return { materialId, thickness, width, length, services, serviceDetails };
+  return { materialId, thickness, width, length, options, services, serviceDetails };
 }
 
 // 입력값 검증
@@ -660,14 +724,10 @@ function validateInputs(input) {
   if (!thickness) return "두께를 선택해주세요.";
   if (!width) return "폭을 입력해주세요.";
   const widthMin = mat?.minWidth ?? WIDTH_MIN;
-  const widthMax = mat?.maxWidth ?? WIDTH_MAX;
-  if (width < widthMin || width > widthMax)
-    return `폭은 ${widthMin} ~ ${widthMax}mm 사이여야 합니다.`;
+  if (width < widthMin) return `폭은 ${widthMin}mm 이상 입력해주세요.`;
   if (!length) return "길이를 입력해주세요.";
   const lengthMin = mat?.minLength ?? LENGTH_MIN;
-  const lengthMax = mat?.maxLength ?? LENGTH_MAX;
-  if (length < lengthMin || length > lengthMax)
-    return `길이는 ${lengthMin} ~ ${lengthMax}mm 사이여야 합니다.`;
+  if (length < lengthMin) return `길이는 ${lengthMin}mm 이상 입력해주세요.`;
 
   const material = mat;
   if (!material.availableThickness?.includes(thickness)) {
@@ -784,6 +844,12 @@ function resetStepsAfterAdd() {
   if (widthEl) widthEl.value = "";
   if (lengthEl) lengthEl.value = "";
 
+  // 옵션 초기화
+  document.querySelectorAll('input[name="boardOption"]').forEach((input) => {
+    input.checked = false;
+    input.closest(".option-card")?.classList.remove("selected");
+  });
+
   // 가공 서비스 초기화
   document.querySelectorAll('input[name="service"]').forEach((input) => {
     input.checked = false;
@@ -817,6 +883,7 @@ function updateStepVisibility(scrollTarget) {
   }
   const step1 = document.getElementById("step1");
   const step2 = document.getElementById("step2");
+  const step3Options = document.getElementById("step3Options");
   const step3 = document.getElementById("step3");
   const actionCard = document.querySelector(".action-card");
   const step4 = document.getElementById("step4");
@@ -843,7 +910,7 @@ function updateStepVisibility(scrollTarget) {
     return;
   }
 
-  [step1, step2, step3, actionCard].forEach((el) => {
+  [step1, step2, step3Options, step3, actionCard].forEach((el) => {
     if (el) el.classList.toggle("hidden-step", !showPhase1);
   });
   if (step4) step4.classList.toggle("hidden-step", !showPhase2);
@@ -916,7 +983,7 @@ function renderTable() {
         : MATERIALS[item.materialId].name;
       return escapeHtml(materialName);
     },
-    getTotalText: (item) => `${item.total.toLocaleString()}원`,
+    getTotalText: (item) => (item.isCustomPrice ? "상담 안내" : `${item.total.toLocaleString()}원`),
     getDetailLines: (item) => {
       const isAddon = item.type === "addon";
       const addonInfo = isAddon ? BOARD_ADDON_ITEMS.find((a) => a.id === item.addonId) : null;
@@ -931,10 +998,18 @@ function renderTable() {
       }
       const sizeText = `${item.thickness}T / ${item.width}×${item.length}mm`;
       const servicesText = formatServiceList(item.services, item.serviceDetails, { includeNote: true });
-      return [
-        `주문크기 ${escapeHtml(sizeText)} · 가공 ${escapeHtml(servicesText)}`,
-        `합판비 ${item.materialCost.toLocaleString()}원 · 가공비 ${item.processingCost.toLocaleString()}원`,
-      ];
+      const baseLines = buildEstimateDetailLines({
+        sizeText: escapeHtml(sizeText),
+        optionsText: escapeHtml(item.optionsLabel || "-"),
+        servicesText: escapeHtml(servicesText),
+        materialLabel: "합판비",
+        materialCost: item.isCustomPrice ? null : item.materialCost,
+        processingCost: item.processingCost,
+      });
+      if (item.isCustomPrice) {
+        baseLines.splice(3, 0, "합판비 상담 안내");
+      }
+      return baseLines;
     },
     onQuantityChange: (id, value) => updateItemQuantity(id, value),
     onDelete: (id) => {
@@ -961,6 +1036,7 @@ function updateItemQuantity(id, quantity) {
       length: item.length,
       thickness: item.thickness,
       quantity,
+      options: item.options,
       services: item.services,
       serviceDetails: item.serviceDetails,
     });
@@ -1010,8 +1086,10 @@ function buildEmailContent() {
       const servicesText = isAddon
         ? "-"
         : formatServiceList(item.services, item.serviceDetails, { includeNote: true });
+      const optionsText = isAddon ? "-" : item.optionsLabel || "-";
+      const amountText = item.isCustomPrice ? "상담 안내" : `${item.total.toLocaleString()}원`;
       lines.push(
-        `${idx + 1}. ${materialName} x${item.quantity} | 크기 ${sizeText} | 가공 ${servicesText} | 금액 ${item.total.toLocaleString()}원`
+        `${idx + 1}. ${materialName} x${item.quantity} | 크기 ${sizeText} | 옵션 ${optionsText} | 가공 ${servicesText} | 금액 ${amountText}`
       );
     });
   }
@@ -1122,7 +1200,9 @@ function renderOrderCompleteDetails() {
             const servicesText = isAddon
               ? "-"
               : formatServiceList(item.services, item.serviceDetails, { includeNote: true });
-            return `<p class="item-line">${idx + 1}. ${escapeHtml(materialName)} x${item.quantity} · 크기 ${escapeHtml(sizeText)} · 가공 ${escapeHtml(servicesText)} · 금액 ${item.total.toLocaleString()}원</p>`;
+            const optionsText = isAddon ? "-" : item.optionsLabel || "-";
+            const amountText = item.isCustomPrice ? "상담 안내" : `${item.total.toLocaleString()}원`;
+            return `<p class="item-line">${idx + 1}. ${escapeHtml(materialName)} x${item.quantity} · 크기 ${escapeHtml(sizeText)} · 옵션 ${escapeHtml(optionsText)} · 가공 ${escapeHtml(servicesText)} · 금액 ${amountText}</p>`;
           })
           .join("");
 
@@ -1215,9 +1295,7 @@ function validateSizeFields() {
   const calcBtn = $("#calcItemBtn");
   const mat = MATERIALS[selectedMaterialId];
   const widthMin = mat?.minWidth ?? WIDTH_MIN;
-  const widthMax = mat?.maxWidth ?? WIDTH_MAX;
   const lengthMin = mat?.minLength ?? LENGTH_MIN;
-  const lengthMax = mat?.maxLength ?? LENGTH_MAX;
 
   const { valid } = updateSizeErrors({
     widthId: "widthInput",
@@ -1225,9 +1303,9 @@ function validateSizeFields() {
     widthErrorId: "widthError",
     lengthErrorId: "lengthError",
     widthMin,
-    widthMax,
+    widthMax: null,
     lengthMin,
-    lengthMax,
+    lengthMax: null,
   });
 
   if (calcBtn) calcBtn.disabled = !valid;
@@ -1243,8 +1321,13 @@ function autoCalculatePrice() {
     return;
   }
   const detail = calcItemDetail({ ...input, quantity: 1 });
+  if (detail.isCustomPrice) {
+    $("#itemPriceDisplay").textContent = "금액: 상담 안내";
+    updateAddItemState();
+    return;
+  }
   $("#itemPriceDisplay").textContent =
-    `금액(부가세 포함): ${detail.total.toLocaleString()}원 ` +
+    `금액: ${detail.total.toLocaleString()}원 ` +
     `(합판비 ${detail.materialCost.toLocaleString()} + 가공비 ${detail.processingCost.toLocaleString()})`;
   updateAddItemState();
 }
@@ -1463,6 +1546,7 @@ function init() {
 
   renderMaterialTabs();
   renderMaterialCards();
+  renderOptionCards();
   renderServiceCards();
   renderAddonCards();
   renderTable();
