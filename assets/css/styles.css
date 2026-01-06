@@ -84,7 +84,7 @@ b[lang="en"],
   max-width: 1440px;
   margin: auto;
   background: var(--color-surface);
-  padding: 3vw;
+  padding: 4vw;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
 }
