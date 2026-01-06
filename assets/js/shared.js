@@ -350,10 +350,17 @@ export function createServiceModalController({
   closeModal,
   onRevertSelection,
   onAfterSave,
+  onAfterRemove,
   onAfterClose,
 } = {}) {
   let draft = null;
   let context = { serviceId: null, triggerCheckbox: null, mode: null };
+  const createDefaultHole = () => ({
+    edge: "left",
+    distance: 100,
+    verticalRef: "top",
+    verticalDistance: 100,
+  });
 
   const setError = (message = "") => {
     const errEl = errorId ? document.querySelector(errorId) : null;
@@ -365,66 +372,62 @@ export function createServiceModalController({
     const srv = services?.[serviceId];
     if (!body || !srv) return;
     const normalized = srv.normalizeDetail(draft);
-    const holes =
-      Array.isArray(normalized?.holes) && normalized.holes.length > 0
-        ? normalized.holes
-        : srv.defaultDetail().holes;
+    const holes = Array.isArray(normalized?.holes) ? normalized.holes : [];
     draft = { ...normalized, holes: holes.map((h) => ({ ...h })) };
 
-    const rowsHtml = holes
-      .map(
-        (hole, idx) => `
-          <div class="service-row">
-            <div class="service-row-header">
-              <span>${srv.label} ${idx + 1}</span>
-              ${
-                holes.length > 1
-                  ? `<button type="button" class="ghost-btn remove-hole" data-index="${idx}">삭제</button>`
-                  : ""
-              }
-            </div>
-            <div class="service-field-grid">
-              <div>
-                <label>측면</label>
-                <select class="service-input" data-field="edge" data-index="${idx}">
-                  <option value="left"${hole.edge === "left" ? " selected" : ""}>왼쪽</option>
-                  <option value="right"${hole.edge === "right" ? " selected" : ""}>오른쪽</option>
-                </select>
-              </div>
-              <div>
-                <label>가로(mm)</label>
-                <input
-                  type="number"
-                  class="service-input"
-                  data-field="distance"
-                  data-index="${idx}"
-                  value="${hole.distance ?? ""}"
-                  min="1"
-                />
-              </div>
-              <div>
-                <label>세로 기준</label>
-                <select class="service-input" data-field="verticalRef" data-index="${idx}">
-                  <option value="top"${hole.verticalRef === "top" ? " selected" : ""}>상단 기준</option>
-                  <option value="bottom"${hole.verticalRef === "bottom" ? " selected" : ""}>하단 기준</option>
-                </select>
-              </div>
-              <div>
-                <label>세로(mm)</label>
-                <input
-                  type="number"
-                  class="service-input"
-                  data-field="verticalDistance"
-                  data-index="${idx}"
-                  value="${hole.verticalDistance ?? ""}"
-                  min="1"
-                />
-              </div>
-            </div>
-          </div>
-        `
-      )
-      .join("");
+    const rowsHtml =
+      holes.length > 0
+        ? holes
+            .map(
+              (hole, idx) => `
+                <div class="service-row">
+                  <div class="service-row-header">
+                    <span>${srv.label} ${idx + 1}</span>
+                    <button type="button" class="ghost-btn remove-hole" data-index="${idx}">삭제</button>
+                  </div>
+                  <div class="service-field-grid">
+                    <div>
+                      <label>측면</label>
+                      <select class="service-input" data-field="edge" data-index="${idx}">
+                        <option value="left"${hole.edge === "left" ? " selected" : ""}>왼쪽</option>
+                        <option value="right"${hole.edge === "right" ? " selected" : ""}>오른쪽</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>가로(mm)</label>
+                      <input
+                        type="number"
+                        class="service-input"
+                        data-field="distance"
+                        data-index="${idx}"
+                        value="${hole.distance ?? ""}"
+                        min="1"
+                      />
+                    </div>
+                    <div>
+                      <label>세로 기준</label>
+                      <select class="service-input" data-field="verticalRef" data-index="${idx}">
+                        <option value="top"${hole.verticalRef === "top" ? " selected" : ""}>상단 기준</option>
+                        <option value="bottom"${hole.verticalRef === "bottom" ? " selected" : ""}>하단 기준</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>세로(mm)</label>
+                      <input
+                        type="number"
+                        class="service-input"
+                        data-field="verticalDistance"
+                        data-index="${idx}"
+                        value="${hole.verticalDistance ?? ""}"
+                        min="1"
+                      />
+                    </div>
+                  </div>
+                </div>
+              `
+            )
+            .join("")
+        : `<div class="service-empty">등록된 위치가 없습니다. 아래의 "위치 추가"를 눌러주세요.</div>`;
 
     body.innerHTML = `
       <p class="service-option-tip">${srv.label} 위치를 원의 중심 기준으로 입력해주세요. 여러 개를 추가할 수 있습니다.</p>
@@ -464,12 +467,7 @@ export function createServiceModalController({
     const addBtn = body.querySelector("[data-add-hole]");
     if (addBtn) {
       addBtn.addEventListener("click", () => {
-        draft.holes.push({
-          edge: "left",
-          distance: 100,
-          verticalRef: "top",
-          verticalDistance: 100,
-        });
+        draft.holes.push(createDefaultHole());
         renderHoleModal(serviceId);
       });
     }
@@ -479,14 +477,6 @@ export function createServiceModalController({
         const idx = Number(e.target.dataset.index);
         if (Number.isNaN(idx)) return;
         draft.holes.splice(idx, 1);
-        if (draft.holes.length === 0) {
-          draft.holes.push({
-            edge: "left",
-            distance: 100,
-            verticalRef: "top",
-            verticalDistance: 100,
-          });
-        }
         renderHoleModal(serviceId);
       });
     });
@@ -517,7 +507,7 @@ export function createServiceModalController({
     draft =
       cloneServiceDetails?.(state?.serviceDetails?.[serviceId]) ||
       getDefaultServiceDetail?.(serviceId) ||
-      { note: "" };
+      { note: "", holes: [] };
     renderContent(serviceId);
     openModal?.(modalId, { focusTarget });
   };
@@ -561,7 +551,22 @@ export function createServiceModalController({
     close(false);
   };
 
-  return { open, close, save };
+  const remove = () => {
+    const serviceId = context.serviceId;
+    if (!serviceId) return;
+    if (context.triggerCheckbox) {
+      context.triggerCheckbox.checked = false;
+      context.triggerCheckbox.closest(".service-card")?.classList.remove("selected");
+    }
+    if (state?.serviceDetails) {
+      delete state.serviceDetails[serviceId];
+    }
+    updateServiceSummary?.(serviceId);
+    onAfterRemove?.();
+    close(false);
+  };
+
+  return { open, close, save, remove };
 }
 
 export function renderSelectedCard({

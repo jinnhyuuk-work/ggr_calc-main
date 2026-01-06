@@ -65,7 +65,10 @@ class BaseService {
 function formatHoleDetail(detail, { includeNote = false, short = false } = {}) {
   if (!detail) return short ? "세부 옵션을 설정해주세요." : "세부 옵션 미입력";
   const holes = Array.isArray(detail.holes) ? detail.holes : [];
-  const count = holes.length || detail.count || 1;
+  if (holes.length === 0) {
+    return short ? "세부 옵션을 설정해주세요." : "세부 옵션 미입력";
+  }
+  const count = holes.length || detail.count || 0;
   const positions = holes
     .filter((h) => h && (h.distance || h.verticalDistance))
     .map((h) => {
@@ -86,17 +89,11 @@ class HoleService extends BaseService {
     super({ ...cfg, type: "detail" });
   }
   defaultDetail() {
-    return {
-      holes: [{ edge: "left", distance: 100, verticalRef: "top", verticalDistance: 100 }],
-      note: "",
-    };
+    return { holes: [], note: "" };
   }
   normalizeDetail(detail) {
     if (!detail || !Array.isArray(detail.holes)) return this.defaultDetail();
-    const holes =
-      detail.holes.length > 0
-        ? detail.holes
-        : [{ edge: "left", distance: 100, verticalRef: "top", verticalDistance: 100 }];
+    const holes = detail.holes;
     return {
       holes: holes.map((h) => ({
         edge: h.edge === "right" ? "right" : "left",
@@ -136,8 +133,8 @@ class HoleService extends BaseService {
   getCount(detail) {
     const normalized = this.normalizeDetail(detail);
     const holes = Array.isArray(normalized.holes) ? normalized.holes.length : 0;
-    const fallback = normalized.count || 1;
-    return Math.max(1, holes || fallback || 1);
+    const fallback = normalized.count || 0;
+    return Math.max(0, holes || fallback || 0);
   }
   formatDetail(detail, { includeNote = false, short = false } = {}) {
     return formatHoleDetail(detail, { includeNote, short });
@@ -165,6 +162,7 @@ function cloneServiceDetails(details) {
 function getDefaultServiceDetail(serviceId) {
   const srv = SERVICES[serviceId];
   if (!srv) return { note: "" };
+  if (srv.hasDetail()) return { holes: [], note: "" };
   return cloneServiceDetails(srv.defaultDetail ? srv.defaultDetail() : { note: "" });
 }
 
@@ -585,9 +583,6 @@ function renderServiceCards() {
         <div class="service-detail-chip" data-service-summary="${srv.id}">
           ${srv.hasDetail() ? "세부 옵션을 설정해주세요." : "추가 설정 없음"}
         </div>
-        <button type="button" class="service-detail-btn" data-service="${srv.id}" ${
-          srv.hasDetail() ? "" : 'style="display:none;"'
-        }>세부 설정</button>
       </div>
     `;
     container.appendChild(label);
@@ -610,6 +605,11 @@ function renderServiceCards() {
           refreshTopEstimate();
         }
       } else {
+        if (srv?.hasDetail()) {
+          e.target.checked = true;
+          openServiceModal(serviceId, e.target, "edit");
+          return;
+        }
         card?.classList.remove("selected");
         delete state.serviceDetails[serviceId];
         updateServiceSummary(serviceId);
@@ -619,21 +619,24 @@ function renderServiceCards() {
   });
 
   container.addEventListener("click", (e) => {
-    const btn = e.target.closest(".service-detail-btn");
-    if (btn) {
-      e.preventDefault();
-      e.stopPropagation();
-      const serviceId = btn.dataset.service;
-      const srv = SERVICES[serviceId];
-      if (!srv?.hasDetail()) return;
-      const checkbox = container.querySelector(`input[value="${serviceId}"]`);
-      const wasChecked = checkbox?.checked;
-      if (checkbox && !checkbox.checked) {
-        checkbox.checked = true;
-        checkbox.closest(".service-card")?.classList.add("selected");
-      }
-      openServiceModal(serviceId, checkbox, wasChecked ? "edit" : "change");
+    const card = e.target.closest(".service-card");
+    if (!card) return;
+    const checkbox = card.querySelector('input[name="service"]');
+    if (!checkbox) return;
+    const serviceId = checkbox.value;
+    const srv = SERVICES[serviceId];
+    if (!srv?.hasDetail()) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const wasChecked = checkbox.checked;
+    if (!checkbox.checked) {
+      checkbox.checked = true;
+      card.classList.add("selected");
+      updateServiceSummary(serviceId);
+      refreshTopEstimate();
+      updateAddButtonState();
     }
+    openServiceModal(serviceId, checkbox, wasChecked ? "edit" : "change");
   });
 }
 
@@ -1031,6 +1034,10 @@ const serviceModalController = createServiceModalController({
     refreshTopEstimate();
     updateAddButtonState();
   },
+  onAfterRemove: () => {
+    refreshTopEstimate();
+    updateAddButtonState();
+  },
 });
 
 function openServiceModal(serviceId, triggerCheckbox, mode = "change") {
@@ -1043,6 +1050,10 @@ function closeServiceModal(revertSelection = true) {
 
 function saveServiceModal() {
   serviceModalController.save();
+}
+
+function removeServiceModal() {
+  serviceModalController.remove();
 }
 
 function updateItemQuantity(id, quantity) {
@@ -1345,6 +1356,7 @@ function initTop() {
   $("#closeInfoModal")?.addEventListener("click", closeInfoModal);
   $("#infoModalBackdrop")?.addEventListener("click", closeInfoModal);
   $("#saveTopServiceModal")?.addEventListener("click", saveServiceModal);
+  $("#removeTopServiceModal")?.addEventListener("click", removeServiceModal);
   $("#cancelTopServiceModal")?.addEventListener("click", () => closeServiceModal(true));
   $("#topServiceModalBackdrop")?.addEventListener("click", () => closeServiceModal(true));
 
