@@ -365,6 +365,7 @@ const previewSummaryConfig = {
 let currentPhase = 1; // 1: 합판/가공, 2: 부자재, 3: 고객 정보
 let sendingEmail = false;
 let orderCompleted = false;
+let stickyOffsetTimer = null;
 const EXTRA_CATEGORIES = ["LPM", "PP"];
 const categories = Array.from(
   new Set(
@@ -1040,6 +1041,7 @@ function renderTable() {
       renderSummary();
     },
   });
+  requestStickyOffsetUpdate();
 }
 
 function updateItemQuantity(id, quantity) {
@@ -1549,6 +1551,22 @@ function updateModalCardPreviews() {
   }
 }
 
+function updateStickyOffset() {
+  const summary = document.getElementById("stepFinal");
+  if (!summary) return;
+  const body = summary.querySelector(".summary-body");
+  const prevDisplay = body?.style.display;
+  if (body) body.style.display = "none";
+  const height = summary.getBoundingClientRect().height;
+  if (body) body.style.display = prevDisplay || "";
+  document.documentElement.style.setProperty("--sticky-offset", `${Math.ceil(height) + 16}px`);
+}
+
+function requestStickyOffsetUpdate() {
+  if (stickyOffsetTimer) cancelAnimationFrame(stickyOffsetTimer);
+  stickyOffsetTimer = requestAnimationFrame(updateStickyOffset);
+}
+
 function updateSizePlaceholders(mat) {
   const widthEl = $("#widthInput");
   const lengthEl = $("#lengthInput");
@@ -1600,6 +1618,7 @@ function init() {
   updateSelectedAddonsDisplay();
   updateAddItemState();
   updateStepVisibility();
+  requestStickyOffsetUpdate();
 
   $("#closeInfoModal")?.addEventListener("click", closeInfoModal);
   $("#infoModalBackdrop")?.addEventListener("click", closeInfoModal);
@@ -1635,6 +1654,7 @@ function init() {
   $("#removeServiceModal")?.addEventListener("click", removeServiceModal);
   $("#cancelServiceModal")?.addEventListener("click", () => closeServiceModal(true));
   $("#serviceModalBackdrop")?.addEventListener("click", () => closeServiceModal(true));
+  $("#stepFinal .summary-toggle")?.addEventListener("click", requestStickyOffsetUpdate);
   $("#backToCenterBtn")?.addEventListener("click", () => {
     window.location.href = "index.html";
   });
@@ -1647,6 +1667,7 @@ function init() {
   $("#resetFlowBtn")?.addEventListener("click", () => {
     window.location.href = "index.html";
   });
+  window.addEventListener("resize", requestStickyOffsetUpdate);
   document.addEventListener("change", (e) => {
     if (e.target.name === "material" || e.target.name === "service") {
       autoCalculatePrice();

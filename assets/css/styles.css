@@ -240,6 +240,12 @@ b[lang="en"],
   display: none;
 }
 
+@media (max-width: 900px) {
+  body {
+    padding-bottom: var(--sticky-offset, 0px);
+  }
+}
+
 h1 {
   margin-bottom: 30px;
 }
@@ -1432,9 +1438,7 @@ th, td {
   }
 
   .sticky-spacer {
-    display: block;
-    height: clamp(220px, 30vh, 320px);
-    width: 100%;
+    display: none;
   }
 
   .card-grid,

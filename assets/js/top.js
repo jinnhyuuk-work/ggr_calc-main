@@ -214,6 +214,7 @@ const previewSummaryConfig = {
 };
 let sendingEmail = false;
 let orderCompleted = false;
+let stickyOffsetTimer = null;
 const DEFAULT_TOP_THICKNESSES = [12, 24, 30, 40, 50];
 const TOP_CUSTOM_WIDTH_MAX = 800;
 const TOP_CUSTOM_LENGTH_MAX = 3000;
@@ -693,6 +694,7 @@ function renderTable() {
       updateStepVisibility();
     },
   });
+  requestStickyOffsetUpdate();
 }
 
 function renderSummary() {
@@ -921,6 +923,22 @@ function updateLength2Visibility() {
   if (!row) return;
   const needsSecond = shape === "l" || shape === "rl";
   row.classList.toggle("hidden-step", !needsSecond);
+}
+
+function updateStickyOffset() {
+  const summary = document.getElementById("stepFinal");
+  if (!summary) return;
+  const body = summary.querySelector(".summary-body");
+  const prevDisplay = body?.style.display;
+  if (body) body.style.display = "none";
+  const height = summary.getBoundingClientRect().height;
+  if (body) body.style.display = prevDisplay || "";
+  document.documentElement.style.setProperty("--sticky-offset", `${Math.ceil(height) + 16}px`);
+}
+
+function requestStickyOffsetUpdate() {
+  if (stickyOffsetTimer) cancelAnimationFrame(stickyOffsetTimer);
+  stickyOffsetTimer = requestAnimationFrame(updateStickyOffset);
 }
 
 function updateTopPreview(input, detail) {
@@ -1403,6 +1421,9 @@ function initTop() {
   updateStepVisibility();
   updateSendButtonEnabled();
   updateTopPreview(readTopInputs(), null);
+  requestStickyOffsetUpdate();
+  $("#stepFinal .summary-toggle")?.addEventListener("click", requestStickyOffsetUpdate);
+  window.addEventListener("resize", requestStickyOffsetUpdate);
 }
 
 function openTopTypeModal() {
