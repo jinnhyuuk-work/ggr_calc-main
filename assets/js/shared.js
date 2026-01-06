@@ -667,12 +667,14 @@ export function initCollapsibleSections({
     const targetId = btn.dataset.toggleTarget;
     const section = targetId ? document.getElementById(targetId) : null;
     if (!section) return;
+    const openLabel = btn.dataset.openText || openText;
+    const closedLabel = btn.dataset.closedText || closedText;
     const isCollapsed = section.classList.contains(collapsedClass);
-    btn.textContent = isCollapsed ? closedText : openText;
+    btn.textContent = isCollapsed ? closedLabel : openLabel;
     btn.setAttribute("aria-expanded", String(!isCollapsed));
     btn.addEventListener("click", () => {
       const nowCollapsed = section.classList.toggle(collapsedClass);
-      btn.textContent = nowCollapsed ? closedText : openText;
+      btn.textContent = nowCollapsed ? closedLabel : openLabel;
       btn.setAttribute("aria-expanded", String(!nowCollapsed));
     });
   });

@@ -214,21 +214,27 @@
         </section>
       </div>
 
-      <aside class="step-card summary-card" id="stepFinal">
-        <h2>주문하실 견적서를 확인해주세요.</h2>
-        <div class="table-wrapper">
-          <table id="estimateTable">
-            <thead>
-              <tr>
-                <th>제품명</th>
-                <th>수량</th>
-                <th>금액</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-          <div id="estimateEmpty" class="empty-banner">추가된 항목이 없습니다.</div>
+      <div class="sticky-spacer"></div>
+      <aside class="step-card summary-card is-collapsed" id="stepFinal">
+        <div class="summary-header">
+          <h2>주문하실 견적서를 확인해주세요.</h2>
+          <button type="button" class="ghost-btn step-toggle summary-toggle" data-toggle-target="stepFinal" data-open-text="닫기" data-closed-text="열기" aria-expanded="false">열기</button>
+        </div>
+        <div class="summary-body">
+          <div class="table-wrapper">
+            <table id="estimateTable">
+              <thead>
+                <tr>
+                  <th>제품명</th>
+                  <th>수량</th>
+                  <th>금액</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <div id="estimateEmpty" class="empty-banner">추가된 항목이 없습니다.</div>
+          </div>
         </div>
 
         <div class="summary">

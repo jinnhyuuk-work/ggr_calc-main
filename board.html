@@ -206,22 +206,28 @@
       </div>
 
       <!-- FINAL: 견적 리스트 & 총액 (우측 고정) -->
-      <aside id="stepFinal" class="step-card summary-card">
-        <h2>주문하실 견적서를 확인해주세요.</h2>
+      <div class="sticky-spacer"></div>
+      <aside id="stepFinal" class="step-card summary-card is-collapsed">
+        <div class="summary-header">
+          <h2>주문하실 견적서를 확인해주세요.</h2>
+          <button type="button" class="ghost-btn step-toggle summary-toggle" data-toggle-target="stepFinal" data-open-text="닫기" data-closed-text="열기" aria-expanded="false">열기</button>
+        </div>
 
-        <table id="estimateTable">
-          <thead>
-            <tr>
-              <th>제품명</th>
-              <th>수량</th>
-              <th>금액</th>
-              <th>삭제</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+        <div class="summary-body">
+          <table id="estimateTable">
+            <thead>
+              <tr>
+                <th>제품명</th>
+                <th>수량</th>
+                <th>금액</th>
+                <th>삭제</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
 
-        <div id="estimateEmpty" class="empty-banner">추가된 항목이 없습니다.</div>
+          <div id="estimateEmpty" class="empty-banner">추가된 항목이 없습니다.</div>
+        </div>
 
         <div class="summary">
           <p>예상 결제금액: <span id="grandTotal">0</span> 원</p>
