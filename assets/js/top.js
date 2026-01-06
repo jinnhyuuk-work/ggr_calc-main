@@ -494,10 +494,12 @@ function renderOptions() {
   container.querySelectorAll("input[type='checkbox']").forEach((input) => {
     input.closest(".option-card")?.classList.toggle("selected", input.checked);
   });
+  updateOptionHeaderSummary();
   container.addEventListener("change", (e) => {
     const input = e.target.closest("input[type='checkbox']");
     if (!input) return;
     input.closest(".option-card")?.classList.toggle("selected", input.checked);
+    updateOptionHeaderSummary();
     refreshTopEstimate();
   });
 }
@@ -556,6 +558,48 @@ function updateServiceSummary(serviceId) {
     serviceDetails: state.serviceDetails,
     formatSummaryText: formatServiceSummaryText,
   });
+  updatePreviewSummary();
+}
+
+function updateOptionHeaderSummary() {
+  const summaryEl = $("#optionSummary");
+  const previewEl = $("#previewOptionSummary");
+  if (!summaryEl && !previewEl) return;
+  const count = document.querySelectorAll("#topOptionCards input:checked").length;
+  const text = count ? `옵션 ${count}개 선택` : "옵션 선택 없음";
+  if (summaryEl) summaryEl.textContent = text;
+  if (previewEl) previewEl.textContent = text;
+}
+
+function updateServiceHeaderSummary() {
+  const summaryEl = $("#serviceSummary");
+  const previewEl = $("#previewServiceSummary");
+  if (!summaryEl && !previewEl) return;
+  const count = document.querySelectorAll('input[name="service"]:checked').length;
+  const text = count ? `가공 ${count}개 선택` : "가공 선택 없음";
+  if (summaryEl) summaryEl.textContent = text;
+  if (previewEl) previewEl.textContent = text;
+}
+
+function updatePreviewSummary() {
+  updateOptionHeaderSummary();
+  updateServiceHeaderSummary();
+}
+
+function initCollapsibleSections() {
+  document.querySelectorAll(".step-toggle").forEach((btn) => {
+    const targetId = btn.dataset.toggleTarget;
+    const section = targetId ? document.getElementById(targetId) : null;
+    if (!section) return;
+    const isCollapsed = section.classList.contains("is-collapsed");
+    btn.textContent = isCollapsed ? "열기" : "접기";
+    btn.setAttribute("aria-expanded", String(!isCollapsed));
+    btn.addEventListener("click", () => {
+      const nowCollapsed = section.classList.toggle("is-collapsed");
+      btn.textContent = nowCollapsed ? "열기" : "접기";
+      btn.setAttribute("aria-expanded", String(!nowCollapsed));
+    });
+  });
 }
 
 function renderServiceCards() {
@@ -589,6 +633,7 @@ function renderServiceCards() {
   });
 
   Object.keys(SERVICES).forEach((id) => updateServiceSummary(id));
+  updatePreviewSummary();
 
   container.addEventListener("change", (e) => {
     if (e.target.name === "service") {
@@ -604,6 +649,7 @@ function renderServiceCards() {
           updateServiceSummary(serviceId);
           refreshTopEstimate();
         }
+        updateServiceHeaderSummary();
       } else {
         if (srv?.hasDetail()) {
           e.target.checked = true;
@@ -614,6 +660,7 @@ function renderServiceCards() {
         delete state.serviceDetails[serviceId];
         updateServiceSummary(serviceId);
         refreshTopEstimate();
+        updateServiceHeaderSummary();
       }
     }
   });
@@ -847,6 +894,7 @@ function resetSelections() {
   });
   state.serviceDetails = {};
   Object.keys(SERVICES).forEach((id) => updateServiceSummary(id));
+  updateOptionHeaderSummary();
   updateSelectedTopTypeCard();
   updateSelectedTopAddonsDisplay();
   refreshTopEstimate();
@@ -1099,6 +1147,7 @@ function closeInfoModal() {
 function updateStepVisibility() {
   const step1 = $("#step1");
   const step2 = $("#step2");
+  const stepPreview = $("#stepPreview");
   const step3Options = $("#step3Options");
   const step3Services = $("#step3Services");
   const step4 = $("#step4");
@@ -1117,15 +1166,23 @@ function updateStepVisibility() {
   const showPhase3 = currentPhase === 3;
 
   if (orderCompleted) {
-    [step1, step2, step3Options, step3Services, step4, step5, actionCard, summaryCard].forEach((el) =>
-      el?.classList.add("hidden-step")
-    );
+    [
+      step1,
+      step2,
+      stepPreview,
+      step3Options,
+      step3Services,
+      step4,
+      step5,
+      actionCard,
+      summaryCard,
+    ].forEach((el) => el?.classList.add("hidden-step"));
     navActions?.classList.add("hidden-step");
     orderComplete?.classList.remove("hidden-step");
     return;
   }
 
-  [step1, step2, step3Options, step3Services, actionCard].forEach((el) => {
+  [step1, step2, stepPreview, step3Options, step3Services, actionCard].forEach((el) => {
     el?.classList.toggle("hidden-step", !showPhase1);
   });
   step4?.classList.toggle("hidden-step", !showPhase2);
@@ -1183,8 +1240,8 @@ function resetOrderCompleteUI() {
   orderCompleted = false;
   const orderComplete = $("#orderComplete");
   const navActions = document.querySelector(".nav-actions");
-  ["step1", "step2", "step3Options", "step3Services", "step4", "step5", "stepFinal"].forEach((id) =>
-    document.getElementById(id)?.classList.remove("hidden-step")
+  ["step1", "step2", "stepPreview", "step3Options", "step3Services", "step4", "step5", "stepFinal"].forEach(
+    (id) => document.getElementById(id)?.classList.remove("hidden-step")
   );
   navActions?.classList.remove("hidden-step");
   orderComplete?.classList.add("hidden-step");
@@ -1327,6 +1384,7 @@ function initTop() {
   renderOptions();
   renderTopAddonCards();
   renderServiceCards();
+  initCollapsibleSections();
   renderTable();
   renderSummary();
   updateSelectedTopTypeCard();
@@ -1336,6 +1394,7 @@ function initTop() {
   renderTopCategoryDesc();
   resetOrderCompleteUI();
   initEmailJS();
+  updatePreviewSummary();
   const priceEl = $("#topEstimateText");
   if (priceEl) priceEl.textContent = "상판 타입을 선택해주세요.";
 

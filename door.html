@@ -69,23 +69,52 @@
             </div>
           </div>
 
-          <div class="preview-box" id="previewBox">
-            <div class="preview-text" id="previewText">도어와 사이즈를 선택하면 미리보기가 표시됩니다.</div>
-            <div class="preview-frame">
-              <div class="preview-color" id="previewColor"></div>
+        </section>
+
+        <section id="step3Options" class="step-card is-collapsible is-collapsed">
+          <div class="step-card-header">
+            <h2>옵션을 선택해주세요.</h2>
+            <div class="step-card-meta">
+              <span class="step-card-summary" id="optionSummary">옵션 선택 없음</span>
+              <button type="button" class="ghost-btn step-toggle" data-toggle-target="step3Options" aria-expanded="false">열기</button>
             </div>
+          </div>
+          <div class="step-card-body" id="step3OptionsBody">
+            <div id="doorOptionCards" class="card-grid card-grid--2col card-grid--keep-2col"></div>
           </div>
         </section>
 
-        <section id="step3Options" class="step-card">
-          <h2>옵션을 선택해주세요.</h2>
-          <div id="doorOptionCards" class="card-grid card-grid--2col card-grid--keep-2col"></div>
+        <!-- STEP 03: 가공 서비스 선택 -->
+        <section id="step3" class="step-card is-collapsible is-collapsed">
+          <div class="step-card-header">
+            <h2>가공 서비스를 선택해주세요.</h2>
+            <div class="step-card-meta">
+              <span class="step-card-summary" id="serviceSummary">가공 선택 없음</span>
+              <button type="button" class="ghost-btn step-toggle" data-toggle-target="step3" aria-expanded="false">열기</button>
+            </div>
+          </div>
+          <div class="step-card-body" id="step3Body">
+            <div id="serviceCards" class="card-grid card-grid--2col card-grid--keep-2col"></div>
+          </div>
         </section>
 
-        <!-- STEP 03: 가공 서비스 선택 -->
-        <section id="step3" class="step-card">
-          <h2>가공 서비스를 선택해주세요.</h2>
-          <div id="serviceCards" class="card-grid card-grid--2col card-grid--keep-2col"></div>
+        <section id="stepPreview" class="step-card preview-summary-card">
+          <div class="step-card-header">
+            <h2>미리보기</h2>
+          </div>
+          <div class="preview-summary-grid">
+            <div class="preview-box" id="previewBox">
+              <div class="preview-text" id="previewText">도어와 사이즈를 선택하면 미리보기가 표시됩니다.</div>
+              <div class="preview-frame">
+                <div class="preview-color" id="previewColor"></div>
+              </div>
+            </div>
+            <div class="preview-summary-line">
+              <span id="previewOptionSummary">옵션 선택 없음</span>
+              <span class="preview-summary-sep">·</span>
+              <span id="previewServiceSummary">가공 선택 없음</span>
+            </div>
+          </div>
         </section>
 
         <section class="step-card action-card">

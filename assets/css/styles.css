@@ -242,6 +242,52 @@ section {
   margin: 4px 0 20px;
 }
 
+.step-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.step-card-header h2 {
+  margin: 0;
+}
+
+.step-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-card-summary {
+  font-size: 12px;
+  color: var(--color-text-sub);
+}
+
+.step-card.is-collapsible.is-collapsed .step-card-body {
+  display: none;
+}
+
+.preview-summary-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.preview-summary-line {
+  padding: 10px 12px;
+  border: 1px solid var(--color-border-faint);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-size: 13px;
+  color: var(--color-text-strong);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
 .material-tabs {
   display: flex;
   gap: 8px;
@@ -1340,4 +1386,8 @@ th, td {
   .card-grid--keep-2col {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+.preview-summary-sep {
+  color: var(--color-text-sub);
 }
