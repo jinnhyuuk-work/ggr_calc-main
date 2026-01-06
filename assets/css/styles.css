@@ -117,7 +117,7 @@ b[lang="en"],
 
 .title-description {
   margin: 0;
-  font-size: 22px;
+  font-size: var(--font-size-lg);
   line-height: 1.4;
   color: var(--color-text);
 }
@@ -260,11 +260,6 @@ section {
   gap: 8px;
 }
 
-.step-card-summary {
-  font-size: 12px;
-  color: var(--color-text-sub);
-}
-
 .step-card.is-collapsible.is-collapsed .step-card-body {
   display: none;
 }
@@ -280,7 +275,7 @@ section {
   border: 1px solid var(--color-border-faint);
   border-radius: var(--radius-md);
   background: var(--color-surface);
-  font-size: 13px;
+  font-size: var(--font-size-xs);
   color: var(--color-text-strong);
   display: flex;
   align-items: center;
@@ -298,7 +293,7 @@ section {
 .material-category-desc {
   margin: 0 0 8px;
   color: var(--color-text-muted);
-  font-size: 13px;
+  font-size: var(--font-size-xs);
 }
 
 .material-category-header {
@@ -570,13 +565,13 @@ input[type="number"]::-webkit-outer-spin-button {
 #itemPriceDisplay {
   margin: 15px 0;
   font-weight: bold;
-  font-size: 18px;
+  font-size: var(--font-size-lg);
 }
 
 .item-price-display {
   margin: 15px 0;
   font-weight: bold;
-  font-size: 18px;
+  font-size: var(--font-size-lg);
 }
 
 :is(button, .next-page-btn, .prev-page-btn, .secondary-btn, .send-btn, .ghost-btn, .service-detail-btn) {
@@ -681,7 +676,7 @@ th, td {
 }
 
 .summary p {
-  font-size: 16px;
+  font-size: var(--font-size-md);
   margin: 6px 0;
   font-weight: 600;
   padding: 10px 0;
@@ -773,20 +768,20 @@ th, td {
 
 .order-complete .complete-section h4 {
   margin: 0 0 6px;
-  font-size: 14px;
+  font-size: var(--font-size-sm);
   color: var(--color-text);
 }
 
 .order-complete .complete-section p {
   margin: 2px 0;
   color: var(--color-text-strong);
-  font-size: 13px;
+  font-size: var(--font-size-xs);
 }
 
 .order-complete .item-line {
   margin: 2px 0;
   color: var(--color-text-strong);
-  font-size: 13px;
+  font-size: var(--font-size-xs);
 }
 
 .order-complete-visible #estimateTable,
@@ -815,7 +810,7 @@ th, td {
   background: #fff;
   border: 1px solid #e5e5e5;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   line-height: 1.6;
 }
 
@@ -829,7 +824,7 @@ th, td {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: var(--font-size-sm);
 }
 
 .addons-card {
@@ -885,7 +880,7 @@ th, td {
 
 .selected-material-card .placeholder {
   color: #777;
-  font-size: 14px;
+  font-size: var(--font-size-sm);
 }
 
 .selected-material {
@@ -918,7 +913,7 @@ th, td {
 
 .selected-material-card .info .meta {
   color: var(--color-text-meta);
-  font-size: 13px;
+  font-size: var(--font-size-xs);
 }
 
 .selected-toptype-card {
@@ -936,7 +931,7 @@ th, td {
 
 .selected-toptype-card .placeholder {
   color: #777;
-  font-size: 14px;
+  font-size: var(--font-size-sm);
 }
 
 .selected-toptype-card .material-visual {
@@ -964,7 +959,7 @@ th, td {
 
 .selected-toptype-card .info .meta {
   color: var(--color-text-meta);
-  font-size: 13px;
+  font-size: var(--font-size-xs);
 }
 
 .addon-card-display {
@@ -996,7 +991,7 @@ th, td {
 
 .addon-chip .meta {
   color: var(--color-text-meta);
-  font-size: 12px;
+  font-size: var(--font-size-xs);
 }
 
 
@@ -1066,13 +1061,13 @@ th, td {
 
 .card-base .size {
   color: var(--color-text-meta);
-  font-size: 13px;
+  font-size: var(--font-size-xs);
 }
 
 .card-base .description {
   font-size: var(--font-size-xs);
   color: var(--color-text-sub);
-  font-size: 13px;
+  font-size: var(--font-size-xs);
   margin-top: 4px;
   line-height: 1.4;
 }
@@ -1181,7 +1176,7 @@ th, td {
 }
 
 .info-message {
-  font-size: 14px;
+  font-size: var(--font-size-sm);
   color: var(--color-text-strong);
   line-height: 1.5;
 }
@@ -1212,7 +1207,7 @@ th, td {
 .service-detail-btn {
   --btn-padding: 9px 14px;
   --btn-border: 1px solid var(--color-accent);
-  font-size: 13px;
+  font-size: var(--font-size-xs);
 }
 
 .service-detail-chip {
@@ -1220,14 +1215,14 @@ th, td {
   padding: 6px 10px;
   background: var(--color-chip-bg);
   border-radius: var(--radius-sm);
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   color: var(--color-note-text);
 }
 
 .service-option-tip {
   margin: 0 0 12px;
   color: var(--color-text-muted);
-  font-size: 13px;
+  font-size: var(--font-size-xs);
   background: var(--color-tip-bg);
   padding: 10px 12px;
   border-radius: var(--radius-md);
@@ -1240,7 +1235,7 @@ th, td {
   border: 1px dashed var(--color-border-faint);
   border-radius: var(--radius-md);
   color: var(--color-text-sub);
-  font-size: 13px;
+  font-size: var(--font-size-xs);
 }
 
 .service-row {
@@ -1283,7 +1278,7 @@ th, td {
 .ghost-btn {
   --btn-border: 1px solid var(--color-accent);
   --btn-padding: 9px 12px;
-  font-size: 13px;
+  font-size: var(--font-size-xs);
 }
 
 .service-textarea,
@@ -1328,7 +1323,7 @@ th, td {
 }
 
 .detail-row .sub-detail {
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   color: var(--color-text-sub);
   text-align: right;
   display: flex;
@@ -1344,7 +1339,7 @@ th, td {
 
 .error-msg {
   color: var(--color-text-meta);
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   line-height: 1.4;
 }
 

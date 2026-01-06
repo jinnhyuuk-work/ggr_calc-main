@@ -92,7 +92,6 @@
           <div class="step-card-header">
             <h2>추가 옵션을 선택해주세요.</h2>
             <div class="step-card-meta">
-              <span class="step-card-summary" id="optionSummary">옵션 선택 없음</span>
               <button type="button" class="ghost-btn step-toggle" data-toggle-target="step3Options" aria-expanded="false">열기</button>
             </div>
           </div>
@@ -105,7 +104,6 @@
           <div class="step-card-header">
             <h2>가공 서비스를 선택해주세요.</h2>
             <div class="step-card-meta">
-              <span class="step-card-summary" id="serviceSummary">가공 선택 없음</span>
               <button type="button" class="ghost-btn step-toggle" data-toggle-target="step3Services" aria-expanded="false">열기</button>
             </div>
           </div>
@@ -284,7 +282,7 @@
         <h3 id="topAddonModalTitle" tabindex="-1">부자재 선택</h3>
       </div>
       <div class="modal-body">
-        <div id="topAddonCards" class="card-grid card-grid--3col"></div>
+        <div id="topAddonCards" class="card-grid card-grid--3col card-grid--keep-2col"></div>
       </div>
       <div class="modal-footer">
         <button type="button" id="closeTopAddonModal" class="modal-close">닫기</button>

@@ -562,22 +562,18 @@ function updateServiceSummary(serviceId) {
 }
 
 function updateOptionHeaderSummary() {
-  const summaryEl = $("#optionSummary");
   const previewEl = $("#previewOptionSummary");
-  if (!summaryEl && !previewEl) return;
+  if (!previewEl) return;
   const count = document.querySelectorAll("#topOptionCards input:checked").length;
   const text = count ? `옵션 ${count}개 선택` : "옵션 선택 없음";
-  if (summaryEl) summaryEl.textContent = text;
   if (previewEl) previewEl.textContent = text;
 }
 
 function updateServiceHeaderSummary() {
-  const summaryEl = $("#serviceSummary");
   const previewEl = $("#previewServiceSummary");
-  if (!summaryEl && !previewEl) return;
+  if (!previewEl) return;
   const count = document.querySelectorAll('input[name="service"]:checked').length;
   const text = count ? `가공 ${count}개 선택` : "가공 선택 없음";
-  if (summaryEl) summaryEl.textContent = text;
   if (previewEl) previewEl.textContent = text;
 }
 
