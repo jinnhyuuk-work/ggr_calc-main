@@ -88,44 +88,44 @@
 
         </section>
 
-        <section id="step3Options" class="step-card is-collapsible is-collapsed">
+        <section id="step3Options" class="step-card is-accordion is-collapsed">
           <div class="step-card-header">
             <h2>추가 옵션을 선택해주세요.</h2>
             <div class="step-card-meta">
-              <button type="button" class="ghost-btn step-toggle" data-toggle-target="step3Options" aria-expanded="false">열기</button>
+              <button type="button" class="ghost-btn accordion-toggle" data-toggle-target="step3Options" aria-expanded="false">열기</button>
             </div>
           </div>
-          <div class="step-card-body" id="step3OptionsBody">
-            <div class="card-grid card-grid--2col card-grid--keep-2col" id="topOptionCards"></div>
+          <div class="accordion-body" id="step3OptionsBody">
+            <div class="grid-cards grid-cards--2 grid-cards--keep-2" id="topOptionCards"></div>
           </div>
         </section>
         
-        <section id="step3Services" class="step-card is-collapsible is-collapsed">
+        <section id="step3Services" class="step-card is-accordion is-collapsed">
           <div class="step-card-header">
             <h2>가공 서비스를 선택해주세요.</h2>
             <div class="step-card-meta">
-              <button type="button" class="ghost-btn step-toggle" data-toggle-target="step3Services" aria-expanded="false">열기</button>
+              <button type="button" class="ghost-btn accordion-toggle" data-toggle-target="step3Services" aria-expanded="false">열기</button>
             </div>
           </div>
-          <div class="step-card-body" id="step3ServicesBody">
-            <div class="card-grid card-grid--2col card-grid--keep-2col" id="topServiceCards"></div>
+          <div class="accordion-body" id="step3ServicesBody">
+            <div class="grid-cards grid-cards--2 grid-cards--keep-2" id="topServiceCards"></div>
           </div>
         </section>
 
-        <section id="stepPreview" class="step-card preview-summary-card">
+        <section id="stepPreview" class="step-card preview-panel">
           <div class="step-card-header">
             <h2>미리보기</h2>
           </div>
-          <div class="preview-summary-grid">
+          <div class="preview-panel-grid">
             <div class="preview-box" id="topPreviewBox">
               <div class="preview-text" id="topPreviewText">상판과 사이즈를 선택하면 미리보기가 표시됩니다.</div>
               <div class="preview-frame">
                 <div class="preview-color" id="topPreviewColor"></div>
               </div>
             </div>
-            <div class="preview-summary-line">
+            <div class="preview-panel-summary">
               <span id="previewOptionSummary">옵션 선택 없음</span>
-              <span class="preview-summary-sep">·</span>
+              <span class="preview-panel-sep">·</span>
               <span id="previewServiceSummary">가공 선택 없음</span>
             </div>
           </div>
@@ -214,12 +214,12 @@
         </section>
       </div>
 
-      <aside class="step-card summary-card is-collapsed" id="stepFinal">
-        <div class="summary-header">
+      <aside class="step-card estimate-panel is-collapsed" id="stepFinal">
+        <div class="estimate-header">
           <h2>주문하실 견적서를 확인해주세요.</h2>
-          <button type="button" class="ghost-btn step-toggle summary-toggle" data-toggle-target="stepFinal" data-open-text="닫기" data-closed-text="열기" aria-expanded="false">열기</button>
+          <button type="button" class="ghost-btn accordion-toggle estimate-toggle" data-toggle-target="stepFinal" data-open-text="닫기" data-closed-text="열기" aria-expanded="false">열기</button>
         </div>
-        <div class="summary-body">
+        <div class="estimate-body">
           <div class="table-wrapper">
             <table id="estimateTable">
               <thead>
@@ -272,7 +272,7 @@
         </div>
       </div>
       <div class="modal-body">
-        <div id="topTypeCards" class="card-grid card-grid--3col"></div>
+        <div id="topTypeCards" class="grid-cards grid-cards--3"></div>
       </div>
       <div class="modal-footer">
         <button type="button" id="closeTopTypeModal" class="modal-close">닫기</button>
@@ -287,7 +287,7 @@
         <h3 id="topAddonModalTitle" tabindex="-1">부자재 선택</h3>
       </div>
       <div class="modal-body">
-        <div id="topAddonCards" class="card-grid card-grid--3col card-grid--keep-2col"></div>
+        <div id="topAddonCards" class="grid-cards grid-cards--3 grid-cards--keep-2"></div>
       </div>
       <div class="modal-footer">
         <button type="button" id="closeTopAddonModal" class="modal-close">닫기</button>

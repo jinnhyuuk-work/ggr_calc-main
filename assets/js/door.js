@@ -1572,7 +1572,7 @@ function updateModalCardPreviews() {
 function updateStickyOffset() {
   const summary = document.getElementById("stepFinal");
   if (!summary) return;
-  const body = summary.querySelector(".summary-body");
+  const body = summary.querySelector(".estimate-body");
   const prevDisplay = body?.style.display;
   if (body) body.style.display = "none";
   const height = summary.getBoundingClientRect().height;
@@ -1672,7 +1672,7 @@ function init() {
   $("#removeServiceModal")?.addEventListener("click", removeServiceModal);
   $("#cancelServiceModal")?.addEventListener("click", () => closeServiceModal(true));
   $("#serviceModalBackdrop")?.addEventListener("click", () => closeServiceModal(true));
-  $("#stepFinal .summary-toggle")?.addEventListener("click", requestStickyOffsetUpdate);
+  $("#stepFinal .estimate-toggle")?.addEventListener("click", requestStickyOffsetUpdate);
   $("#backToCenterBtn")?.addEventListener("click", () => {
     window.location.href = "index.html";
   });

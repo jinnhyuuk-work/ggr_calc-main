@@ -657,7 +657,7 @@ export function updateServiceSummaryChip({
 }
 
 export function initCollapsibleSections({
-  toggleSelector = ".step-toggle",
+  toggleSelector = ".accordion-toggle",
   collapsedClass = "is-collapsed",
   openText = "접기",
   closedText = "열기",

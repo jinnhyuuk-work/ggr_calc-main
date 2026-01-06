@@ -928,7 +928,7 @@ function updateLength2Visibility() {
 function updateStickyOffset() {
   const summary = document.getElementById("stepFinal");
   if (!summary) return;
-  const body = summary.querySelector(".summary-body");
+  const body = summary.querySelector(".estimate-body");
   const prevDisplay = body?.style.display;
   if (body) body.style.display = "none";
   const height = summary.getBoundingClientRect().height;
@@ -1422,7 +1422,7 @@ function initTop() {
   updateSendButtonEnabled();
   updateTopPreview(readTopInputs(), null);
   requestStickyOffsetUpdate();
-  $("#stepFinal .summary-toggle")?.addEventListener("click", requestStickyOffsetUpdate);
+  $("#stepFinal .estimate-toggle")?.addEventListener("click", requestStickyOffsetUpdate);
   window.addEventListener("resize", requestStickyOffsetUpdate);
 }
 
