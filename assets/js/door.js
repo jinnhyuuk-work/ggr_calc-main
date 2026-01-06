@@ -1104,6 +1104,7 @@ function buildEmailContent() {
   lines.push(`이름: ${customer.name || "-"}`);
   lines.push(`연락처: ${customer.phone || "-"}`);
   lines.push(`이메일: ${customer.email || "-"}`);
+  lines.push(`주소: ${customer.postcode || "-"} ${customer.address || ""} ${customer.detailAddress || ""}`.trim());
   lines.push(`요청사항: ${customer.memo || "-"}`);
   lines.push("");
   lines.push("[주문 내역]");
@@ -1131,11 +1132,11 @@ function buildEmailContent() {
 
   lines.push("");
   lines.push("[합계]");
-  lines.push(`도어비: ${summary.materialsTotal.toLocaleString()}원`);
   const hasCustom = state.items.some((item) => item.isCustomPrice);
   const suffix = hasCustom ? "(상담 필요 품목 미포함)" : "";
+  const naverUnits = Math.ceil(summary.grandTotal / 1000) || 0;
   lines.push(`예상 결제금액: ${summary.grandTotal.toLocaleString()}원${suffix}`);
-  lines.push(`예상무게: ${summary.totalWeight.toFixed(2)}kg`);
+  lines.push(`예상 네이버 결제수량: ${naverUnits}개`);
 
   const subject = `[GGR 견적요청] ${customer.name || "고객명"} (${customer.phone || "연락처"})`;
   return {
@@ -1249,6 +1250,7 @@ function renderOrderCompleteDetails() {
       <p>이름: ${escapeHtml(customer.name || "-")}</p>
       <p>연락처: ${escapeHtml(customer.phone || "-")}</p>
       <p>이메일: ${escapeHtml(customer.email || "-")}</p>
+      <p>주소: ${escapeHtml(customer.postcode || "-")} ${escapeHtml(customer.address || "")} ${escapeHtml(customer.detailAddress || "")}</p>
       <p>요청사항: ${escapeHtml(customer.memo || "-")}</p>
     </div>
     <div class="complete-section">
@@ -1284,12 +1286,14 @@ async function sendQuote() {
   updateSendButtonEnabled();
 
   const { subject, body, lines } = buildEmailContent();
+  const addressLine = `${customer.postcode || "-"} ${customer.address || ""} ${customer.detailAddress || ""}`.trim();
   const templateParams = {
     subject,
-    message: body,
+    message: `${body}\n\n주소: ${addressLine || "-"}`,
     customer_name: customer.name,
     customer_phone: customer.phone,
     customer_email: customer.email,
+    customer_address: addressLine || "-",
     customer_memo: customer.memo || "-",
     order_lines: lines.join("\n"),
   };
@@ -1590,8 +1594,8 @@ function updateSizePlaceholders(mat) {
   const lengthEl = $("#lengthInput");
   if (!widthEl || !lengthEl) return;
   if (!mat) {
-    widthEl.placeholder = "폭 100~800mm";
-    lengthEl.placeholder = "길이 200~2400mm";
+    widthEl.placeholder = "도어를 선택해주세요.";
+    lengthEl.placeholder = "도어를 선택해주세요.";
     return;
   }
   widthEl.placeholder = `폭 ${mat.minWidth}~${mat.maxWidth}mm`;
@@ -1679,6 +1683,10 @@ function init() {
   $("#sendQuoteBtn")?.addEventListener("click", sendQuote);
   document.getElementById("privacyConsent")?.addEventListener("change", updateSendButtonEnabled);
   ["#customerName", "#customerPhone", "#customerEmail"].forEach((sel) => {
+    const el = document.querySelector(sel);
+    el?.addEventListener("input", updateSendButtonEnabled);
+  });
+  ["#sample6_postcode", "#sample6_address", "#sample6_detailAddress"].forEach((sel) => {
     const el = document.querySelector(sel);
     el?.addEventListener("input", updateSendButtonEnabled);
   });

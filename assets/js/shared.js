@@ -69,18 +69,27 @@ export function getCustomerInfo({
   phoneSelector = "#customerPhone",
   emailSelector = "#customerEmail",
   memoSelector = "#customerMemo",
+  postcodeSelector = "#sample6_postcode",
+  addressSelector = "#sample6_address",
+  detailAddressSelector = "#sample6_detailAddress",
 } = {}) {
   return {
     name: document.querySelector(nameSelector)?.value.trim() || "",
     phone: document.querySelector(phoneSelector)?.value.trim() || "",
     email: document.querySelector(emailSelector)?.value.trim() || "",
     memo: document.querySelector(memoSelector)?.value.trim() || "",
+    postcode: document.querySelector(postcodeSelector)?.value.trim() || "",
+    address: document.querySelector(addressSelector)?.value.trim() || "",
+    detailAddress: document.querySelector(detailAddressSelector)?.value.trim() || "",
   };
 }
 
 export function validateCustomerInfo(customer) {
   if (!customer?.name || !customer?.phone || !customer?.email) {
     return "이름, 연락처, 이메일을 입력해주세요.";
+  }
+  if (!customer?.postcode || !customer?.address || !customer?.detailAddress) {
+    return "주소를 입력해주세요.";
   }
   return "";
 }
@@ -100,7 +109,14 @@ export function updateSendButtonEnabled({
 } = {}) {
   const btn = document.querySelector(buttonSelector);
   if (!btn) return;
-  const hasRequired = Boolean(customer.name && customer.phone && customer.email);
+  const hasRequired = Boolean(
+    customer.name &&
+      customer.phone &&
+      customer.email &&
+      customer.postcode &&
+      customer.address &&
+      customer.detailAddress
+  );
   btn.disabled = !(hasRequired && hasItems && onFinalStep && hasConsent) || sending;
 }
 
@@ -171,6 +187,19 @@ export function updateSizeErrors({
   clearField(lengthEl, lengthErrEl);
   clearField(length2El, length2ErrEl);
 
+  const formatRangeError = (label, min, max) => {
+    if (Number.isFinite(min) && Number.isFinite(max)) {
+      return `${label}은 ${min}~${max}mm 범위 내로 입력해주세요.`;
+    }
+    if (Number.isFinite(min)) {
+      return `${label}은 ${min}mm 이상으로 입력해주세요.`;
+    }
+    if (Number.isFinite(max)) {
+      return `${label}은 ${max}mm 이하로 입력해주세요.`;
+    }
+    return `${label} 범위를 확인해주세요.`;
+  };
+
   let widthValid = true;
   let lengthValid = true;
   let length2Valid = true;
@@ -182,13 +211,7 @@ export function updateSizeErrors({
     if (!minOk || !maxOk) {
       widthValid = false;
       if (widthErrEl) {
-        if (Number.isFinite(widthMin) && Number.isFinite(widthMax)) {
-          widthErrEl.textContent = `폭: ${widthMin}~${widthMax}mm 범위로 입력해주세요.`;
-        } else if (Number.isFinite(widthMin)) {
-          widthErrEl.textContent = `폭: ${widthMin}mm 이상 입력해주세요.`;
-        } else if (Number.isFinite(widthMax)) {
-          widthErrEl.textContent = `폭: ${widthMax}mm 이하로 입력해주세요.`;
-        }
+        widthErrEl.textContent = formatRangeError("폭", widthMin, widthMax);
         widthErrEl.classList.add("error");
       }
       widthEl.classList.add("input-error");
@@ -202,13 +225,7 @@ export function updateSizeErrors({
     if (!minOk || !maxOk) {
       lengthValid = false;
       if (lengthErrEl) {
-        if (Number.isFinite(lengthMin) && Number.isFinite(lengthMax)) {
-          lengthErrEl.textContent = `길이: ${lengthMin}~${lengthMax}mm 범위로 입력해주세요.`;
-        } else if (Number.isFinite(lengthMin)) {
-          lengthErrEl.textContent = `길이: ${lengthMin}mm 이상 입력해주세요.`;
-        } else if (Number.isFinite(lengthMax)) {
-          lengthErrEl.textContent = `길이: ${lengthMax}mm 이하로 입력해주세요.`;
-        }
+        lengthErrEl.textContent = formatRangeError("길이", lengthMin, lengthMax);
         lengthErrEl.classList.add("error");
       }
       lengthEl.classList.add("input-error");
@@ -222,13 +239,7 @@ export function updateSizeErrors({
     if (!minOk || !maxOk) {
       length2Valid = false;
       if (length2ErrEl) {
-        if (Number.isFinite(length2Min) && Number.isFinite(length2Max)) {
-          length2ErrEl.textContent = `길이2: ${length2Min}~${length2Max}mm 범위로 입력해주세요.`;
-        } else if (Number.isFinite(length2Min)) {
-          length2ErrEl.textContent = `길이2: ${length2Min}mm 이상 입력해주세요.`;
-        } else if (Number.isFinite(length2Max)) {
-          length2ErrEl.textContent = `길이2: ${length2Max}mm 이하로 입력해주세요.`;
-        }
+        length2ErrEl.textContent = formatRangeError("길이2", length2Min, length2Max);
         length2ErrEl.classList.add("error");
       }
       length2El.classList.add("input-error");

@@ -159,6 +159,17 @@
             </div>
           </div>
           <div class="form-row">
+            <label for="sample6_postcode">주소</label>
+            <div class="field-col">
+              <div class="nav-actions">
+                <input type="text" id="sample6_postcode" placeholder="우편번호" />
+                <button type="button" onclick="sample6_execDaumPostcode()">우편번호 찾기</button>
+              </div>
+              <input type="text" id="sample6_address" placeholder="주소" />
+              <input type="text" id="sample6_detailAddress" placeholder="상세주소" />
+            </div>
+          </div>
+          <div class="form-row">
             <label for="customerMemo">요청사항</label>
             <div class="field-col">
               <textarea id="customerMemo" rows="3" placeholder="배송 시 요청사항 등을 입력해주세요."></textarea>
@@ -309,6 +320,26 @@
     </div>
   </div>
 
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <script>
+    function sample6_execDaumPostcode() {
+      new daum.Postcode({
+        oncomplete: function(data) {
+          var addr = '';
+
+          if (data.userSelectedType === 'R') {
+            addr = data.roadAddress;
+          } else {
+            addr = data.jibunAddress;
+          }
+
+          document.getElementById('sample6_postcode').value = data.zonecode;
+          document.getElementById("sample6_address").value = addr;
+          document.getElementById("sample6_detailAddress").focus();
+        }
+      }).open();
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script type="module" src="assets/js/door.js"></script>
 </body>
